@@ -1,3 +1,4 @@
+import {authDirectory,authenticatedFetch as fetch} from './auth_fixture.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -7,6 +8,7 @@ import {pathToFileURL} from 'node:url';
 
 const data=fs.mkdtempSync(path.join(os.tmpdir(),'image-studio-test-'));
 process.env.LOCAL_IMAGE_DATA_DIR=data;
+process.env.LOCAL_IMAGE_MODELS_DIR=path.join(data,"models");fs.mkdirSync(process.env.LOCAL_IMAGE_MODELS_DIR);fs.writeFileSync(path.join(process.env.LOCAL_IMAGE_MODELS_DIR,"mmproj-Qwen3VL-8B-Instruct-F16.gguf"),"isolated-test-fixture");
 const {submitImage,saveReference}=await import('../src/image_submit.mjs');
 const {readJob,listJobs,startNext,deleteJob,saveJob}=await import('../src/image_jobs.mjs');
 const {imageArgs,childEnvironment,root}=await import('../src/image_worker.mjs');
@@ -23,7 +25,7 @@ const launch=id=>{
  const code=`import {runWorker} from ${JSON.stringify(pathToFileURL(path.join(root,'src/image_worker.mjs')).href)};runWorker(${JSON.stringify(id)},process.execPath,(job,output)=>['-e',job.prompt==='engine failure'?'process.exit(3)':job.prompt==='ignore stop'?"process.on('SIGTERM',()=>{});console.log('generating image: 1/1');console.log('1/2 - 0.30s/it');setInterval(()=>{},1000)":${JSON.stringify(engine)},output,${JSON.stringify(fixture)}]);`;
  const child=spawn(process.execPath,['--input-type=module','-e',code],{stdio:'ignore'});children.push(child);return child;
 };
-const server=createGallery({port:18135,schedule:false});
+const server=createGallery({authDirectory,port:18135,schedule:false});
 await new Promise(r=>server.listen(18135,'127.0.0.1',r));
 const base='http://127.0.0.1:18135';
 const post=(url,body,origin=base)=>fetch(base+url,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)});

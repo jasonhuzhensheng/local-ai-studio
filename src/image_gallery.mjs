@@ -1,9 +1,10 @@
+import {createAuth} from './studio_auth.mjs';
 import {listVideos,readVideo,submitVideo,startVideo,stopVideo,deleteVideo,videoModels,videoBusy,videoDir} from './video_jobs.mjs';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { root, models, references, jobDir, uuidPattern } from './image_paths.mjs';
+import { root, dataRoot, models, references, jobDir, uuidPattern } from './image_paths.mjs';
 import {upscaleModel} from './image_upscale.mjs';
 import { saveReference, submitImage } from './image_submit.mjs';
 import { readJob, listJobs, deleteJob, startNext } from './image_jobs.mjs';
@@ -41,7 +42,8 @@ function allowedHost(host, port) {
   return [...privateIPv4Addresses()].some(address => normalized === `${address}:${port}`);
 }
 
-export function createGallery({port=1235, schedule=true, chatBaseUrl='http://127.0.0.1:1234/v1', chatTimeoutMs=1200000}={}) {
+export function createGallery({port=1235, schedule=true, chatBaseUrl='http://127.0.0.1:1234/v1', chatTimeoutMs=1200000, authDirectory=path.join(dataRoot,'auth')}={}) {
+  const authorize=createAuth({directory:authDirectory,assetRoot:path.join(root,'src')});
   const chatTasks=new Map();let activeChat=0;
   const localVideo=req=>['127.0.0.1','::1','::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
   const taskView=t=>({id:t.id,status:t.status,text:t.text,reasoning:t.reasoning,error:t.error,startedAt:t.startedAt});
@@ -53,6 +55,7 @@ export function createGallery({port=1235, schedule=true, chatBaseUrl='http://127
     const requestOrigin = `http://${req.headers.host}`;
     const url = new URL(req.url, requestOrigin);
     try {
+      if(await authorize(req,res,url))return;
       if((url.pathname.startsWith('/api/video')||url.pathname.startsWith('/videos/'))&&!localVideo(req))return json(res,{error:'视频功能仅允许本机访问'},403);
       if(req.method==='POST') {
         if(req.headers.origin!==requestOrigin||req.headers['content-type']!=='application/json'){res.writeHead(403).end();return;}
@@ -131,6 +134,7 @@ export function createGallery({port=1235, schedule=true, chatBaseUrl='http://127
         res.writeHead(404).end();return;
       }
       if(req.method!=='GET'){res.writeHead(405).end();return;}
+      if(url.pathname==='/auth-guard.js'){res.setHeader('Content-Type','text/javascript; charset=utf-8');res.end(fs.readFileSync(path.join(root,'src/studio_auth_guard.js')));return;}
       if(url.pathname==='/'||url.pathname==='/edit'||/^\/jobs\/[a-f0-9-]+$/.test(url.pathname)) {
         res.setHeader('Content-Type','text/html; charset=utf-8');
         res.end(retryReadSync(()=>fs.readFileSync(path.join(root,'src/image_editor.html'))));return;

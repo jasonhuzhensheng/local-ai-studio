@@ -1,3 +1,4 @@
+import {sessionCookie,authDirectory,authenticatedFetch as fetch} from './auth_fixture.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import os from 'node:os';
@@ -14,11 +15,11 @@ const upstream=http.createServer(async(req,res)=>{
   res.end('data: {"choices":[{"delta":{"content":"你好"}}]}\n\ndata: [DONE]\n\n');
 });
 upstream.listen(0,'127.0.0.1');await once(upstream,'listening');
-const port=18136,server=createGallery({port,schedule:false,chatBaseUrl:`http://127.0.0.1:${upstream.address().port}/v1`});
+const port=18136,server=createGallery({authDirectory,port,schedule:false,chatBaseUrl:`http://127.0.0.1:${upstream.address().port}/v1`});
 server.listen(port,'127.0.0.1');await once(server,'listening');
 const base=`http://127.0.0.1:${port}`;
-const rawGetWithHost=(host,identity=false)=>new Promise((resolve,reject)=>http.get({hostname:'127.0.0.1',port,path:'/edit',headers:{Host:host,...(identity?{'Tailscale-User-Login':'local-test@example.com'}:{})}},response=>{response.resume();response.on('end',()=>resolve(response.statusCode));}).on('error',reject));
-const rawPostWithHost=(host,origin,body,identity=false)=>new Promise((resolve,reject)=>{const payload=JSON.stringify(body);const request=http.request({hostname:'127.0.0.1',port,path:'/api/chat',method:'POST',headers:{Host:host,Origin:origin,'Content-Type':'application/json','Content-Length':Buffer.byteLength(payload),...(identity?{'Tailscale-User-Login':'local-test@example.com'}:{})}},response=>{let text='';response.setEncoding('utf8');response.on('data',chunk=>text+=chunk);response.on('end',()=>resolve({status:response.statusCode,text}));});request.on('error',reject);request.end(payload);});
+const rawGetWithHost=(host,identity=false)=>new Promise((resolve,reject)=>http.get({hostname:'127.0.0.1',port,path:'/edit',headers:{Cookie:sessionCookie(),Host:host,...(identity?{'Tailscale-User-Login':'local-test@example.com'}:{})}},response=>{response.resume();response.on('end',()=>resolve(response.statusCode));}).on('error',reject));
+const rawPostWithHost=(host,origin,body,identity=false)=>new Promise((resolve,reject)=>{const payload=JSON.stringify(body);const request=http.request({hostname:'127.0.0.1',port,path:'/api/chat',method:'POST',headers:{Cookie:sessionCookie(),Host:host,Origin:origin,'Content-Type':'application/json','Content-Length':Buffer.byteLength(payload),...(identity?{'Tailscale-User-Login':'local-test@example.com'}:{})}},response=>{let text='';response.setEncoding('utf8');response.on('data',chunk=>text+=chunk);response.on('end',()=>resolve({status:response.statusCode,text}));});request.on('error',reject);request.end(payload);});
 try{
   const page=await fetch(`${base}/chat`);assert.equal(page.status,200);const pageHtml=await page.text();assert.match(pageHtml,/本地 Qwen 对话/);assert.match(pageHtml,/href="\/edit"[^>]*>图片生成/);assert.match(pageHtml,/id="history-list"/);assert.match(pageHtml,/id="queue-state"/);assert.match(pageHtml,/不会自动排队/);
   const lanAddress=Object.values(os.networkInterfaces()).flat().find(entry=>entry?.family==='IPv4'&&!entry.internal&&(/^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(entry.address)))?.address;

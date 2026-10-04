@@ -1,0 +1,19 @@
+const $=id=>document.getElementById(id);let state;
+const notify=(message,error=false)=>{$('notice').textContent=message;$('notice').className=error?'error':'success';};
+async function api(route,body){const response=await fetch('/api/auth/'+route,body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw Error(data.error||'操作失败');return data;}
+async function action(fn){const buttons=[...document.querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);try{await fn();}catch(e){notify(e.message,true);}finally{buttons.forEach(b=>b.disabled=false);}}
+async function users(){const data=await api('users');$('users').replaceChildren();for(const u of data.users){const card=document.createElement('div');card.className='user';const title=document.createElement('h3');title.textContent=`${u.username} · ${u.role==='admin'?'管理员':'普通用户'} · ${u.disabled?'已停用':'启用中'}`;card.append(title);const actions=document.createElement('div');actions.className='actions';const button=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=()=>action(fn);actions.append(b);};
+button('重置密码',async()=>{$('reset-form').elements.id.value=u.id;$('reset-form').elements.password.value='';$('reset-title').textContent='重置 '+u.username+' 的密码';$('reset-dialog').showModal();});
+button(u.disabled?'启用':'停用',async()=>{if(!confirm(`确定${u.disabled?'启用':'停用'}账号 ${u.username}？现有登录将失效。`))return;await api('users/update',{id:u.id,role:u.role,disabled:!u.disabled});await refresh();});
+button(u.role==='admin'?'改为普通用户':'设为管理员',async()=>{if(!confirm(`确定修改 ${u.username} 的权限？`))return;await api('users/update',{id:u.id,role:u.role==='admin'?'user':'admin',disabled:u.disabled});await refresh();});
+button('删除账号',async()=>{if(!confirm(`确定永久删除账号 ${u.username}？共享生成任务会保留。`))return;await api('users/delete',{id:u.id});await refresh();});card.append(actions);$('users').append(card);}}
+async function refresh(){state=await api('status');$('login-section').hidden=!!state.user||!state.initialized&&!state.canSetup;$('account-section').hidden=!state.user;$('admin-section').hidden=state.user?.role!=='admin';$('setup-note').hidden=state.initialized;
+if(!state.initialized){$('title').textContent='创建首个管理员';$('login-submit').textContent='创建管理员';$('login-form').elements.password.minLength=12;$('login-form').elements.password.autocomplete='new-password';notify(state.canSetup?'设置用户名和密码后，即可从手机登录。':'请先在运行服务的 Mac 上打开 http://127.0.0.1:1235/setup 创建管理员。');}
+else if(!state.user){$('title').textContent='登录工作室';$('login-submit').textContent='登录';notify('请输入管理员提供的账号和密码。');}
+else{$('title').textContent='账号设置';$('identity').textContent=state.user.username+' · '+(state.user.role==='admin'?'管理员':'普通用户');notify('已登录。密码修改、重置或账号停用会使原登录失效。');if(state.user.role==='admin')await users();}}
+$('login-form').onsubmit=e=>{e.preventDefault();action(async()=>{await api(state.initialized?'login':'setup',Object.fromEntries(new FormData(e.target)));e.target.reset();location.replace('/edit');});};
+$('logout').onclick=()=>action(async()=>{await api('logout',{});location.replace('/login');});
+$('password-form').onsubmit=e=>{e.preventDefault();action(async()=>{await api('password',Object.fromEntries(new FormData(e.target)));e.target.reset();location.replace('/login');});};
+$('create-form').onsubmit=e=>{e.preventDefault();action(async()=>{await api('users/create',Object.fromEntries(new FormData(e.target)));e.target.reset();await users();notify('账号已创建，请将密码私下告知使用者。');});};
+$('reset-form').onsubmit=e=>{e.preventDefault();action(async()=>{await api('users/password',Object.fromEntries(new FormData(e.target)));e.target.reset();$('reset-dialog').close();await refresh();});};
+$('reset-cancel').onclick=()=>$('reset-dialog').close();refresh().catch(e=>notify(e.message,true));

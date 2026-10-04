@@ -1,3 +1,4 @@
+import {authDirectory,authenticatedFetch as fetch} from './auth_fixture.mjs';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import {once} from 'node:events';
@@ -14,7 +15,7 @@ const upstream=http.createServer(async(req,res)=>{
  res.end('data: {"choices":[{"delta":{"content":"第二段"}}]}\n\ndata: [DONE]\n\n');
 });upstream.listen(0,'127.0.0.1');await once(upstream,'listening');
 const base='http://127.0.0.1:18139';
-const server=createGallery({port:18139,schedule:false,chatBaseUrl:`http://127.0.0.1:${upstream.address().port}/v1`});server.listen(18139,'127.0.0.1');await once(server,'listening');
+const server=createGallery({authDirectory,port:18139,schedule:false,chatBaseUrl:`http://127.0.0.1:${upstream.address().port}/v1`});server.listen(18139,'127.0.0.1');await once(server,'listening');
 const post=(url,body)=>fetch(base+url,{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:JSON.stringify(body)});
 const wait=async id=>{for(let i=0;i<100;i++){const t=await(await fetch(`${base}/api/chat-tasks/${id}`)).json();if(t.status!=='running')return t;await new Promise(r=>setTimeout(r,20));}throw Error('timeout');};
 try{
