@@ -1,0 +1,13 @@
+{
+  "id": "viggle-qwen-image-2.1-v0.2.1",
+  "name": "Viggle Qwen-Image-2.1 Turbo v0.2.1 6-step LoRA r256",
+  "repository": "Viggle/Qwen-Image-2.1-viggle-turbo",
+  "revision": "b77064be8b3f0b1a13c6a212067cb3d281c60c84",
+  "file": "Qwen-Image-2.1-viggle-turbo-v0.2.1-6step-lora-r256.safetensors",
+  "bytes": 1359147904,
+  "sha256": "2a0148f5c73abbed5f97da5ea356e439318aadb281d01fce4af39cdf43728803",
+  "sigmas": [1.0, 0.9375, 0.875, 0.75, 0.5, 0.25],
+  "base_repository": "Qwen/Qwen-Image-2.1",
+  "license": "Qwen Research License Agreement (non-commercial)",
+  "status": "upstream v0.2.1 preview, separate from the retained v0.1 4-step adapter"
+}

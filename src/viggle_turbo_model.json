@@ -1,0 +1,13 @@
+{
+  "id": "viggle-qwen-image-2.1-4step",
+  "name": "Viggle Qwen-Image-2.1 Turbo 4-step LoRA",
+  "repository": "Viggle/Qwen-Image-2.1-viggle-turbo",
+  "revision": "7c9d130",
+  "file": "Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors",
+  "bytes": 339832808,
+  "sha256": "5c494dce662a95898d0988831af733b203ceced9116a82aa099c997f96ea1a3a",
+  "base_repository": "Qwen/Qwen-Image-2.1",
+  "base_revision": "790c926",
+  "license": "Qwen Research License Agreement (non-commercial)",
+  "status": "v0.1 4-step adapter; the upstream repository currently recommends a newer 5-step v0.2 preview"
+}

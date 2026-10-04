@@ -1,0 +1,41 @@
+--- a/src/pipeline/image.cpp
++++ b/src/pipeline/image.cpp
+@@ -610,6 +610,23 @@
+                     return nullptr;
+                 }
+                 decoded_images.push_back(std::move(image));
++                // Diagnostic only: decode the identical latent with a different tile size.
++                const char* compare = std::getenv("SD_NATIVE_DECODE_COMPARE");
++                if (compare && std::string(compare) == "1" && sd->version == VERSION_QWEN_IMAGE_2_1) {
++                    LOG_INFO("NATIVE_PROFILE decode32_ms=%" PRId64, ggml_time_ms() - t1);
++                    const auto original_tiling = sd->vae_tiling_params;
++                    sd->vae_tiling_params.enabled = true;
++                    sd->vae_tiling_params.tile_size_x = 48;
++                    sd->vae_tiling_params.tile_size_y = 48;
++                    sd->vae_tiling_params.rel_size_x = 0;
++                    sd->vae_tiling_params.rel_size_y = 0;
++                    const int64_t alternate_start = ggml_time_ms();
++                    auto alternate = sd->decode_first_stage(final_latents[i]);
++                    sd->vae_tiling_params = original_tiling;
++                    LOG_INFO("NATIVE_PROFILE decode48_ms=%" PRId64, ggml_time_ms() - alternate_start);
++                    if (alternate.empty()) return nullptr;
++                    decoded_images.push_back(std::move(alternate));
++                }
+             }
+             int64_t t2 = ggml_time_ms();
+             LOG_INFO("latent %zu decoded, taking %.2fs", i + 1, (t2 - t1) * 1.0f / 1000);
+--- a/src/pipeline/diffusion_engine.cpp
++++ b/src/pipeline/diffusion_engine.cpp
+@@ -2485,7 +2485,12 @@
+                 extension->before_diffusion(diffusion_params, step);
+             }
+ 
++            const char* native_profile = std::getenv("SD_NATIVE_PROFILE");
++            const int64_t native_compute_start = ggml_time_ms();
+             auto output_opt = work_diffusion_model->compute(n_threads, diffusion_params);
++            if (native_profile && std::string(native_profile) == "1") {
++                LOG_INFO("NATIVE_PROFILE forward_ms=%" PRId64, ggml_time_ms() - native_compute_start);
++            }
+             if (output_opt.empty()) {
+                 LOG_ERROR("diffusion model compute failed");
+                 return sd::Tensor<float>();

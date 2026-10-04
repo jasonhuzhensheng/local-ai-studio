@@ -1,0 +1,8 @@
+{
+  "interval_seconds": 300,
+  "targets": [
+    {"id": "runpod-example", "provider": "runpod", "enabled": false, "gpu": "NVIDIA RTX A6000", "gpu_count": 1, "secure_cloud": true},
+    {"id": "aws-example", "provider": "aws", "enabled": false, "region": "us-east-1", "instance_type": "g5.xlarge"},
+    {"id": "gcp-example", "provider": "gcp", "enabled": false, "zone": "us-central1-a", "gpu": "nvidia-tesla-t4"}
+  ]
+}

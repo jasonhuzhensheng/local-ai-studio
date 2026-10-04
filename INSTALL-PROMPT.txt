@@ -1,0 +1,12 @@
+请在这台全新机器上部署本代码包中的“本地 AI 工作室”。这是迁移现有源码，不是重新写一个类似网站。
+1. 先读 README-先读我.txt 和代码，检测系统、架构、内存、可用磁盘、GPU和已安装工具。报告兼容性。Apple Silicon 为已验证平台；其他平台先明确适配工作，不冒充直接支持。
+2. 专属目录使用 ~/Library/Application Support/LocalImageStudio，app 放源码，runtime 放环境/引擎/任务，models 放权重；app/.local -> ../runtime，runtime/image-models -> ../models。不要放 iCloud Desktop/Documents，不复用旧用户名、IP、Tailnet身份。
+3. 安装所需正式版本工具：Python3.11、Node（源机25）、CMake、编译工具和 LM Studio。使用隔离虚拟环境，按 requirements/viggle-pinned.txt 与 src/h3_requirements.lock 分别安装图像和视频依赖。若版本不可取得或不支持硬件，明确失败，不擅自升级。H3/ClipProj 的 Apple 适配属于用户允许的实验部分。
+4. 将 vendor/stable-diffusion.cpp 与 vendor/ggml-source 部署到 runtime；源码已有现用修改，不重复叠加历史patch。参考 CMakeLists：-DSD_METAL=ON -DSD_WEBP=OFF -DSD_WEBM=OFF -DSD_GGML_SOURCE_DIR=<绝对ggml路径> -DCMAKE_BUILD_TYPE=Release，编译 sd-cli 并按代码需要构建其他目标。
+5. 根据 src 各模型JSON和安装脚本下载相同revision权重，支持续传，核对大小/SHA256；无hash的文件获取可信上游记录并补清单，不捏造。先根据磁盘/内存决定可运行模块，不能静默换模型。文字模型用LM Studio部署README指定文件，别名与代码一致，本地API1234；不要复制原账号配置。
+6. 视频独立安装于 video-experimental：ComfyUI https://github.com/comfyanonymous/ComfyUI、ClipProj https://github.com/nicolab28/ComfyUI-ClipProj，固定到 patches 对应commit，应用各 deployed.patch 一次。按h3_apple_models.json下载并校验；保留内存保护。不要同时重复应用 src/h3_apple_*.patch。检查代码最新支持的分辨率/帧数/音频组合，不扩展未经验证能力。
+7. 审查所有 /Users/ 硬编码、环境变量、模型目录和可执行文件路径；修正到本机。保留 /edit /chat /video 三入口、任务ID/队列/进度、删除二次确认、文字后台任务和参考图功能。不得引入旧聊天/任务/参考图。
+8. 先在回环运行 node app/src/image_gallery.mjs（按源码配置环境），验证HTTP和模型就绪；1235网页、1234文字API、8191视频后端不得冲突。仅在用户需要时配置局域网和私有Tailscale，不开启公开Funnel。新设备地址现场读取，不沿用<OLD_PRIVATE_IP>。
+9. 选择与修改相关的隔离测试。用自建非敏感提示分别验证文字完整返回/停止/刷新恢复、图片真实出图和实际画面、视频短样片播放；记录耗时/尺寸/内存。不能把HTTP200/文件存在当成完成。
+10. 创建本机登录后自动运行配置，显示名“本地 AI 工作室”。若要求未登录运行，先确认系统/FileVault限制，不把LaunchAgent登录启动称为开机免登录。
+11. 保存本机部署说明、启动停止命令、路径/模型/依赖版本和验证结果。不读取其他私人文件。需要管理员密码/账号登录时由用户完成；其他已授权安装继续执行。完成前明确剩余阻碍，不宣称未执行检查通过。

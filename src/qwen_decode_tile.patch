@@ -1,0 +1,24 @@
+--- a/src/pipeline/image.cpp
++++ b/src/pipeline/image.cpp
+@@ -604,7 +604,21 @@
+                     decoded_images.push_back(std::move(image));
+                 }
+             } else {
++                const char* decode_tile_env = std::getenv("SD_QWEN_DECODE_TILE_SIZE");
++                const bool override_decode_tile = decode_tile_env &&
++                    sd->version == VERSION_QWEN_IMAGE_2_1 &&
++                    request.width * request.height > 1048576 &&
++                    sd->vae_tiling_params.enabled &&
++                    (std::string(decode_tile_env) == "32" || std::string(decode_tile_env) == "48");
++                const auto original_decode_tiling = sd->vae_tiling_params;
++                if (override_decode_tile) {
++                    const int tile_size = std::stoi(decode_tile_env);
++                    sd->vae_tiling_params.tile_size_x = tile_size;
++                    sd->vae_tiling_params.tile_size_y = tile_size;
++                    LOG_INFO("Qwen output VAE decode tile size: %d", tile_size);
++                }
+                 sd::Tensor<float> image = sd->decode_first_stage(final_latents[i]);
++                if (override_decode_tile) sd->vae_tiling_params = original_decode_tiling;
+                 if (image.empty()) {
+                     LOG_ERROR("decode_first_stage failed for latent %" PRId64, i + 1);
+                     return nullptr;

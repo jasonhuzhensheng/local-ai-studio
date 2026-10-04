@@ -1,0 +1,15 @@
+diff --git a/clipproj_nodes.py b/clipproj_nodes.py
+index 2291f8c..171a5cd 100644
+--- a/clipproj_nodes.py
++++ b/clipproj_nodes.py
+@@ -63,6 +63,10 @@ def gpu_devices():
+             devs += ["%s:%d" % (nom, i) for i in range(backend.device_count())]
+         except Exception:
+             continue
++    # Apple Silicon has one unified-memory MPS device.
++    mps = getattr(torch.backends, "mps", None)
++    if mps is not None and mps.is_available():
++        devs.append("mps")
+     return devs + ["cpu"]
+ 
+ 

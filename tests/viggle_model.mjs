@@ -1,0 +1,58 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+const data=fs.mkdtempSync(path.join(os.tmpdir(),'viggle-model-test-'));
+process.env.LOCAL_IMAGE_DATA_DIR=data;
+process.env.LOCAL_IMAGE_MODELS_DIR=path.join(data,'models');
+const {submitImage,saveReference}=await import('../src/image_submit.mjs');
+const {readJob,deleteJob}=await import('../src/image_jobs.mjs');
+const {viggleReady,viggleV021Ready}=await import('../src/viggle_model.mjs');
+const {models}=await import('../src/image_paths.mjs');
+const adapterDir=path.join(models,'viggle-qwen-turbo');
+fs.mkdirSync(path.join(adapterDir,'scheduler'),{recursive:true});
+fs.mkdirSync(path.join(models,'Qwen-Image-2.1-diffusers'),{recursive:true});
+const adapterPath=path.join(adapterDir,'Qwen-Image-2.1-viggle-turbo-4step-lora-r64.safetensors');
+fs.writeFileSync(adapterPath,'fixture');fs.truncateSync(adapterPath,339832808);
+fs.writeFileSync(path.join(adapterDir,'scheduler/scheduler_config.json'),JSON.stringify({shift_terminal:null}));
+const baseDir=path.join(models,'Qwen-Image-2.1-diffusers');
+fs.writeFileSync(path.join(baseDir,'model_index.json'),JSON.stringify({_class_name:'QwenImage21Pipeline'}));
+for(const [component,indexName,prefix,count] of [['transformer','diffusion_pytorch_model.safetensors.index.json','diffusion_pytorch_model',2],['text_encoder','model.safetensors.index.json','model',4]]){
+ const dir=path.join(baseDir,component);fs.mkdirSync(dir,{recursive:true});const weights=Array.from({length:count},(_,i)=>`${prefix}-0000${i+1}-of-0000${count}.safetensors`);const weight_map=Object.fromEntries(weights.map((name,i)=>[`block${i}.weight`,name]));fs.writeFileSync(path.join(dir,indexName),JSON.stringify({weight_map}));for(const name of weights){const file=path.join(dir,name);fs.writeFileSync(file,'fixture');fs.truncateSync(file,1000000001);}
+}
+fs.mkdirSync(path.join(baseDir,'vae'),{recursive:true});fs.writeFileSync(path.join(baseDir,'vae/diffusion_pytorch_model.safetensors'),'fixture');fs.truncateSync(path.join(baseDir,'vae/diffusion_pytorch_model.safetensors'),100000001);
+assert.equal(viggleReady(),true);
+const adapterV02Dir=path.join(models,'viggle-qwen-turbo-v021');
+fs.mkdirSync(path.join(adapterV02Dir,'scheduler'),{recursive:true});
+const adapterV02Path=path.join(adapterV02Dir,'Qwen-Image-2.1-viggle-turbo-v0.2.1-6step-lora-r256.safetensors');
+fs.writeFileSync(adapterV02Path,'fixture');fs.truncateSync(adapterV02Path,1359147904);
+fs.writeFileSync(path.join(adapterV02Dir,'scheduler/scheduler_config.json'),JSON.stringify({shift_terminal:null}));
+fs.writeFileSync(path.join(adapterV02Dir,'verified.json'),JSON.stringify({revision:'b77064be8b3f0b1a13c6a212067cb3d281c60c84',sha256:'2a0148f5c73abbed5f97da5ea356e439318aadb281d01fce4af39cdf43728803'}));
+assert.equal(viggleV021Ready(),true);
+const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aX1cAAAAASUVORK5CYII=','base64');
+const ref=saveReference(png.toString('base64'));
+const created=submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'A quiet lake at dawn',reference_ids:[ref]});
+const job=readJob(created.id);
+assert.equal(job.model_id,'viggle-qwen-image-2.1-4step');
+assert.equal(job.width,1024);assert.equal(job.height,1024);assert.equal(job.steps,4);assert.equal(job.cfg_scale,1);assert.equal(job.cache_mode,'none');
+assert.equal(job.referenceImages.length,1);
+const createdV02=submitImage({model_id:'viggle-qwen-image-2.1-v0.2.1',prompt:'A quiet lake at dawn',reference_ids:[ref]});
+const jobV02=readJob(createdV02.id);
+assert.equal(jobV02.model_id,'viggle-qwen-image-2.1-v0.2.1');
+assert.equal(jobV02.steps,6);assert.equal(jobV02.cfg_scale,1);assert.equal(jobV02.cache_mode,'none');deleteJob(createdV02.id);
+const hiRes=submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'hi res',width:1536,height:1536});
+assert.equal(readJob(hiRes.id).width,1536);assert.equal(readJob(hiRes.id).qwen_optimization,'baseline');deleteJob(hiRes.id);
+const twoK=submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'2k',width:2048,height:2048,large_mode:'faster'});
+assert.equal(readJob(twoK.id).large_mode,'faster');assert.equal(readJob(twoK.id).qwen_optimization,'baseline');deleteJob(twoK.id);
+assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'too big',width:2752,height:1600}),/432万/);
+fs.writeFileSync(path.join(models,'RealESRGAN_x4plus.pth'),'fixture');
+const detail=submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'8k',width:512,height:512,detail_mode:'8k',large_mode:'faster'});
+assert.equal(readJob(detail.id).detail_mode,'8k');assert.equal(readJob(detail.id).large_mode,'faster');deleteJob(detail.id);
+assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'x',steps:5}),/固定4步/);
+assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'x',negative_prompt:'blur'}),/不使用反向提示词/);
+assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'x',cache_mode:'easycache'}),/不使用EasyCache/);
+assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-v0.2.1',prompt:'x',steps:5}),/固定6步/);
+deleteJob(created.id);
+fs.rmSync(data,{recursive:true,force:true});
+console.log('PASS: Viggle v0.1/v0.2.1 routing, 4.32MP cap, tiled large mode, 8K option, and fixed sampler constraints');

@@ -1,0 +1,15 @@
+{
+  "id": "wai-illustrious-v17",
+  "source": "https://civitai.com/models/827184?modelVersionId=2883731",
+  "repository": "LyliaEngine/waiIllustriousSDXL_v170",
+  "revision": "5ef4e2da7173a160ad04aebcaa2fdcd6d20ed792",
+  "file": "waiIllustriousSDXL_v170.safetensors",
+  "bytes": 6938040682,
+  "sha256": "f116b0c78ff441467b0cdc8f1936e1ed18ea31e9997c7b132b1b8db533f0bd04",
+  "engine": "stable-diffusion.cpp Metal",
+  "scope": "text-to-image",
+  "sampler": "euler_a",
+  "scheduler": "discrete",
+  "cfg": 6,
+  "steps": 25
+}

@@ -1,0 +1,19 @@
+diff --git a/comfy/model_management.py b/comfy/model_management.py
+index 4ea7cba..48aa15a 100644
+--- a/comfy/model_management.py
++++ b/comfy/model_management.py
+@@ -592,7 +592,13 @@ if cpu_state != CPUState.GPU:
+     vram_state = VRAMState.DISABLED
+ 
+ if cpu_state == CPUState.MPS:
+-    vram_state = VRAMState.SHARED
++    # Experimental Apple memory-conservative path: honor explicit CLI offload.
++    if args.novram:
++        vram_state = VRAMState.NO_VRAM
++    elif args.lowvram:
++        vram_state = VRAMState.LOW_VRAM
++    else:
++        vram_state = VRAMState.SHARED
+ 
+ logging.info(f"Set vram state to: {vram_state.name}")
+ 

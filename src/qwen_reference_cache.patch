@@ -1,0 +1,59 @@
+--- a/src/pipeline/diffusion_engine.h
++++ b/src/pipeline/diffusion_engine.h
+@@ -47,6 +47,10 @@
+ class StableDiffusionGGML {
+ public:
+     SDBackendManager backend_manager;
++    // Experimental, bounded per-context reference VAE cache. Never shared across models.
++    struct RefVaeCacheEntry { sd::Tensor<float> input; sd::Tensor<float> latent; };
++    std::vector<RefVaeCacheEntry> qwen_ref_cache;
++
+ 
+     SDVersion version;
+     bool external_vae_is_invalid = false;
+--- a/src/pipeline/image.cpp
++++ b/src/pipeline/image.cpp
+@@ -271,6 +271,28 @@
+             LOG_INFO("EDIT mode");
+         }
+ 
++        auto encode_reference = [&](const sd::Tensor<float>& input) {
++            const char* flag = std::getenv("SD_QWEN_REF_CACHE");
++            const bool enabled = flag && std::string(flag) == "1" &&
++                sd->version == VERSION_QWEN_IMAGE_2_1 &&
++                !sd_img_gen_params->vae_tiling_params.enabled && !sd->circular_x && !sd->circular_y &&
++                input.numel() <= 4 * 1048576;
++            if (enabled) {
++                for (const auto& entry : sd->qwen_ref_cache) {
++                    if (entry.input.shape() == input.shape() && entry.input.values() == input.values()) {
++                        LOG_INFO("Qwen reference VAE cache hit");
++                        return entry.latent;
++                    }
++                }
++            }
++            auto latent = sd->encode_first_stage(input);
++            if (enabled && !latent.empty()) {
++                if (sd->qwen_ref_cache.size() >= 3) sd->qwen_ref_cache.erase(sd->qwen_ref_cache.begin());
++                sd->qwen_ref_cache.push_back({input, latent});
++                LOG_INFO("Qwen reference VAE cache stored");
++            }
++            return latent;
++        };
+         std::vector<sd::Tensor<float>> ref_latents;
+         for (size_t i = 0; i < ref_images.size(); i++) {
+             if (sd->version == VERSION_HIDREAM_O1) {
+@@ -309,12 +331,12 @@
+                             resized_ref_img.shape()[1],
+                             resized_ref_img.shape()[0]);
+ 
+-                ref_latent = sd->encode_first_stage(resized_ref_img);
++                ref_latent = encode_reference(resized_ref_img);
+                 if (sd->version == VERSION_QWEN_IMAGE_2_1) {
+                     ref_images[i] = std::move(resized_ref_img);
+                 }
+             } else {
+-                ref_latent = sd->encode_first_stage(ref_images[i]);
++                ref_latent = encode_reference(ref_images[i]);
+             }
+             if (ref_latent.empty()) {
+                 LOG_ERROR("failed to encode reference image %d", static_cast<int>(i));
