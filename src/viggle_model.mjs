@@ -45,7 +45,18 @@ export function viggleV021Ready(){
 }
 
 export function viggleModelReady(modelId){
+  if(["viggle-qwen-image-2.1-v0.3","viggle-qwen-image-2.1-v0.3-9step"].includes(modelId))return viggleV03Ready();
   if(modelId==='viggle-qwen-image-2.1-4step')return viggleReady();
   if(modelId==='viggle-qwen-image-2.1-v0.2.1')return viggleV021Ready();
   return false;
+}
+
+export function viggleV03Ready(){
+  try{
+    const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/viggle_turbo_v03_model.json'),'utf8'));
+    const dir=process.env.LOCAL_VIGGLE_V03||path.join(models,'viggle-qwen-turbo-v03');
+    const verified=JSON.parse(fs.readFileSync(path.join(dir,'verified.json'),'utf8'));
+    const config=JSON.parse(fs.readFileSync(path.join(dir,'scheduler/scheduler_config.json'),'utf8'));
+    return fs.statSync(path.join(dir,manifest.file)).size===manifest.bytes&&verified.sha256===manifest.sha256&&verified.revision===manifest.revision&&config.shift_terminal===null&&baseReady();
+  }catch{return false;}
 }

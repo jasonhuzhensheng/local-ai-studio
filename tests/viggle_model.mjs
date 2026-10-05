@@ -8,7 +8,7 @@ process.env.LOCAL_IMAGE_DATA_DIR=data;
 process.env.LOCAL_IMAGE_MODELS_DIR=path.join(data,'models');
 const {submitImage,saveReference}=await import('../src/image_submit.mjs');
 const {readJob,deleteJob}=await import('../src/image_jobs.mjs');
-const {viggleReady,viggleV021Ready}=await import('../src/viggle_model.mjs');
+const {viggleReady,viggleV021Ready,viggleV03Ready}=await import('../src/viggle_model.mjs');
 const {models}=await import('../src/image_paths.mjs');
 const adapterDir=path.join(models,'viggle-qwen-turbo');
 fs.mkdirSync(path.join(adapterDir,'scheduler'),{recursive:true});
@@ -54,5 +54,19 @@ assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'x'
 assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-4step',prompt:'x',cache_mode:'easycache'}),/不使用EasyCache/);
 assert.throws(()=>submitImage({model_id:'viggle-qwen-image-2.1-v0.2.1',prompt:'x',steps:5}),/固定6步/);
 deleteJob(created.id);
+const manifest=JSON.parse(fs.readFileSync(new URL('../src/viggle_turbo_v03_model.json',import.meta.url),'utf8'));
+const v03=path.join(models,'viggle-qwen-turbo-v03');fs.mkdirSync(path.join(v03,'scheduler'),{recursive:true});
+fs.writeFileSync(path.join(v03,manifest.file),'fixture');fs.truncateSync(path.join(v03,manifest.file),manifest.bytes);
+fs.writeFileSync(path.join(v03,'scheduler/scheduler_config.json'),JSON.stringify({shift_terminal:null}));
+fs.writeFileSync(path.join(v03,'verified.json'),JSON.stringify(manifest));assert.equal(viggleV03Ready(),true);
+for(const [id,steps] of [['viggle-qwen-image-2.1-v0.3',6],['viggle-qwen-image-2.1-v0.3-9step',9]]){
+ const entry=submitImage({model_id:id,prompt:'test',reference_ids:[ref,ref,ref],width:1536,height:1536,large_mode:'faster'});
+ assert.equal(readJob(entry.id).steps,steps);deleteJob(entry.id);
+ assert.throws(()=>submitImage({model_id:id,prompt:'test',steps:4}),/固定/);
+ assert.throws(()=>submitImage({model_id:id,prompt:'test',reference_ids:[ref,ref,ref,ref]}),/最多支持3张/);
+ assert.throws(()=>submitImage({model_id:id,prompt:'test',negative_prompt:'blur'}),/反向提示词/);
+}
+fs.writeFileSync(path.join(v03,'verified.json'),JSON.stringify({...manifest,sha256:'bad'}));assert.equal(viggleV03Ready(),false);
+console.log('PASS: v0.3 6/9 step routing, 3 reference cap, native large mode, metadata verification');
 fs.rmSync(data,{recursive:true,force:true});
 console.log('PASS: Viggle v0.1/v0.2.1 routing, 4.32MP cap, tiled large mode, 8K option, and fixed sampler constraints');

@@ -7,6 +7,7 @@ import sys
 import time
 from pathlib import Path
 from local_model_files import require_resident_tree
+from viggle_schedule import SIGMAS_6, SIGMAS_9, install_base_tail
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS = ROOT / ".local" / "image-models"
@@ -32,13 +33,17 @@ def main(status_path: str, output_path: str) -> None:
     if not torch.backends.mps.is_available():
         raise RuntimeError("PyTorch 无法访问 Apple Metal GPU（MPS）")
     is_v021 = job.get("model_id") == "viggle-qwen-image-2.1-v0.2.1"
-    steps = 6 if is_v021 else 4
+    is_v03 = job.get("model_id", "").startswith("viggle-qwen-image-2.1-v0.3")
+    nine = job.get("model_id") == "viggle-qwen-image-2.1-v0.3-9step"
+    steps = 9 if nine else 6 if is_v021 or is_v03 else 4
     adapter_dir = MODELS / ("viggle-qwen-turbo-v021" if is_v021 else "viggle-qwen-turbo")
     if is_v021:
         adapter_dir = Path(os.environ.get("LOCAL_VIGGLE_V021", str(adapter_dir)))
+    if is_v03:
+        adapter_dir = Path(os.environ.get("LOCAL_VIGGLE_V03", str(MODELS / "viggle-qwen-turbo-v03")))
     require_resident_tree(adapter_dir)
-    lora = V021_LORA if is_v021 else V01_LORA
-    print(f"加载 Qwen-Image-2.1 BF16 与 Viggle {'v0.2.1 6步' if is_v021 else 'v0.1 4步'} LoRA 到 Metal…", flush=True)
+    lora = "Qwen-Image-2.1-viggle-turbo-v0.3-6step-lora-r256.safetensors" if is_v03 else V021_LORA if is_v021 else V01_LORA
+    print(f"加载 Qwen-Image-2.1 BF16 与 Viggle {job.get('model_id')} LoRA 到 Metal…", flush=True)
     started = time.monotonic()
     pipe = QwenImage21Pipeline.from_pretrained(
         BASE, dtype=torch.bfloat16, local_files_only=True, use_safetensors=True
@@ -72,6 +77,8 @@ def main(status_path: str, output_path: str) -> None:
     print(f"模型加载完成，用时 {time.monotonic() - started:.1f}s", flush=True)
 
     refs = job.get("referenceImages") or []
+    if is_v03 and len(refs)>3:
+        raise ValueError("Viggle v0.3最多支持3张参考图")
     images = [Image.open(name).convert("RGB") for name in refs]
     generator = torch.Generator(device="mps").manual_seed(int(job["seed"]))
     call = {
@@ -80,8 +87,8 @@ def main(status_path: str, output_path: str) -> None:
         "true_cfg_scale": 1.0,
         "generator": generator,
     }
-    if is_v021:
-        call["sigmas"] = V021_SIGMAS
+    if is_v021 or is_v03:
+        call["sigmas"] = SIGMAS_9 if nine else SIGMAS_6
     call["width"] = width
     call["height"] = height
     if images:
@@ -92,10 +99,14 @@ def main(status_path: str, output_path: str) -> None:
         print(f"[viggle] REFERENCE_BUDGET {call['output_resolution']} 输出尺寸保持{width}×{height}", flush=True)
 
     print(f"generating image: 1/{steps}", flush=True)
+    tail_step, restore_tail = install_base_tail(pipe) if nine else (lambda _: None, lambda: None)
     prior = time.monotonic()
 
     def on_step_end(_pipe, step, _timestep, callback_kwargs):
         nonlocal prior
+        tail_step(step)
+        if nine and step == 6:
+            print("[viggle] BASE_TAIL 最后两步使用底模并重新提取KV", flush=True)
         now = time.monotonic()
         print(f"{step + 1}/{steps} - {now - prior:.2f}s/it", flush=True)
         if step + 1 == steps:
@@ -103,7 +114,10 @@ def main(status_path: str, output_path: str) -> None:
         prior = now
         return callback_kwargs
 
-    result = pipe(**call, callback_on_step_end=on_step_end).images[0]
+    try:
+        result = pipe(**call, callback_on_step_end=on_step_end).images[0]
+    finally:
+        restore_tail()
     result.save(output_path, format="PNG")
     print(f"Viggle output saved: {output_path}", flush=True)
 

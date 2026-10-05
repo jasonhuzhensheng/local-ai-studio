@@ -8,7 +8,7 @@ import { root, dataRoot, models, references, jobDir, uuidPattern } from './image
 import {upscaleModel} from './image_upscale.mjs';
 import { saveReference, submitImage } from './image_submit.mjs';
 import { readJob, listJobs, deleteJob, startNext } from './image_jobs.mjs';
-import {viggleReady,viggleV021Ready} from './viggle_model.mjs';
+import {viggleReady,viggleV021Ready,viggleV03Ready} from './viggle_model.mjs';
 import { retryReadSync } from './fs_read_retry.mjs';
 import {readChatStream} from './local_chat_stream.mjs';
 export { readJob };
@@ -151,7 +151,7 @@ export function createGallery({port=1235, schedule=true, chatBaseUrl='http://127
       if(url.pathname==='/chat_stream.mjs') {res.setHeader('Content-Type','text/javascript; charset=utf-8');res.end(retryReadSync(()=>fs.readFileSync(path.join(root,'src/local_chat_stream.mjs'))));return;}
       if(url.pathname==='/studio.js') {res.setHeader('Content-Type','text/javascript');res.end(retryReadSync(()=>fs.readFileSync(path.join(root,'src/image_editor.js'))));return;}
       if(url.pathname==='/image_dimensions.mjs') {res.setHeader('Content-Type','text/javascript');res.end(retryReadSync(()=>fs.readFileSync(path.join(root,'src/image_dimensions.mjs'))));return;}
-      if(url.pathname==='/api/models') return json(res,{detailReady:fs.existsSync(upscaleModel),waiReady:fs.existsSync(path.join(models,'waiIllustriousSDXL_v170.safetensors')),viggleReady:viggleReady(),viggleV021Ready:viggleV021Ready()});
+      if(url.pathname==='/api/models') return json(res,{detailReady:fs.existsSync(upscaleModel),waiReady:fs.existsSync(path.join(models,'waiIllustriousSDXL_v170.safetensors')),viggleReady:viggleReady(),viggleV021Ready:viggleV021Ready(),viggleV03Ready:viggleV03Ready()});
       const chatTask=url.pathname.match(/^\/api\/chat-tasks\/([a-f0-9-]+)$/);
       if(chatTask){const task=chatTasks.get(chatTask[1]);return task?json(res,taskView(task)):json(res,{error:'文字任务不存在或服务已重启'},404);}
       if(url.pathname==='/api/jobs') return json(res,{jobs:listJobs()});

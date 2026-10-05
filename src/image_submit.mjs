@@ -19,10 +19,10 @@ export function saveReference(data) {
 export function submitImage(args, internal = {}) {
   const {prompt,reference_id}=args;
   const model_id=args.model_id??'qwen-image-2.1';
-  if(!['qwen-image-2.1','wai-illustrious-v17','viggle-qwen-image-2.1-4step','viggle-qwen-image-2.1-v0.2.1'].includes(model_id))throw Error('不支持的模型');
+  if(!['qwen-image-2.1','wai-illustrious-v17','viggle-qwen-image-2.1-4step','viggle-qwen-image-2.1-v0.2.1','viggle-qwen-image-2.1-v0.3','viggle-qwen-image-2.1-v0.3-9step'].includes(model_id))throw Error('不支持的模型');
   const wai=model_id==='wai-illustrious-v17';
   const viggle=model_id.startsWith('viggle-qwen-image-2.1-');
-  const viggleSteps=model_id==='viggle-qwen-image-2.1-v0.2.1'?6:4;
+  const viggleSteps=model_id==='viggle-qwen-image-2.1-v0.3-9step'?9:['viggle-qwen-image-2.1-v0.2.1','viggle-qwen-image-2.1-v0.3'].includes(model_id)?6:4;
   if(typeof prompt!=='string'||!prompt.trim()||prompt.length>6000)throw Error('请输入修改要求（最多6000字符）');
   const negative_prompt=args.negative_prompt??'';
   if(typeof negative_prompt!=='string'||negative_prompt.length>6000)throw Error('反向提示词最多6000字符');
@@ -63,6 +63,7 @@ export function submitImage(args, internal = {}) {
   if(!Number.isInteger(job.steps)||job.steps<1||job.steps>50||!Number.isInteger(job.seed)||job.seed<0||job.seed>2147483647)throw Error('生成参数不正确');
   const refs=args.reference_ids??(reference_id?[reference_id]:[]);
   if(!Array.isArray(refs)||refs.length>10||refs.some(id=>typeof id!=='string'||!uuidPattern.test(id)))throw Error('请选择最多10张有效参考图');
+  if(model_id.startsWith("viggle-qwen-image-2.1-v0.3")&&refs.length>3)throw Error("Viggle v0.3最多支持3张参考图");
   if(wai){
     if(refs.length)throw Error('WAI 当前支持文字生图；参考图编辑请选择 Qwen');
     if(job.cache_mode!=='none'||job.cfg_scale!==6)throw Error('WAI 请使用无缓存、标准CFG6');
