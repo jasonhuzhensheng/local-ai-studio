@@ -1,4 +1,4 @@
-# 本地 AI 工作室
+# macbook pro工作室
 
 Apple Silicon Mac 本地图像、文字和实验视频工作室。
 
