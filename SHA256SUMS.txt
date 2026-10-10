@@ -1,8 +1,10 @@
 d9ec337238286492e9d09d7a38a5ce2782262d1418952aefde0dbb8d75428eae  .gitignore
 6bfd03db1c5dd647c920605359cab7ec6c75914232ad6749e3c9ef537dae9500  INSTALL-PROMPT.txt
 6a9528ab751e3dabc56d881fc792b466705a09e695cd855691bde13664e5f757  README-先读我.txt
-84969d63ef73b966b751064449d1e8261f5cee2264ca9155972178c6e9bc5034  README.md
+9ded24b26fa8bde8e8a7f11ce8a20d0c87133eaae8cb454123db9c4daeaec8a0  README.md
 16b9850f2fffb87cdf0ff0f30488deb88e46a94c01a3f4c2237b3710560ea955  docs/accounts.md
+d66ff6105aa28ed7ed52860c7e3a4e66f3dfa973d93d9b406ded8d4dd9b73e09  docs/images/chat-studio-demo.png
+3941a21bd92b9824ad5d8c4bfd880d67270296472dd71dac56ce941a92294927  docs/images/image-studio-demo.png
 6f9631dce74f56828bb18afa5eda7e7b8e5a71d9df09d7da5304ee8f0e1b4b27  docs/viggle-v03.md
 d0fbc1b6d406e0343a7653248f50cfcbea623b9575428f165086950abb479986  patches/clipproj-commit.txt
 047c53b987be0777a9d97f4e1e4d27148ea7ac1fd8b8d9dfd9e1bd1f9284f888  patches/clipproj-deployed.patch
@@ -269,6 +271,7 @@ af255601767325f087313fa84b9435cb77aeec37df6b61b98d9ecc65f29fb4a0  vendor/ggml-so
 c694f6bb066a820b717f986914b0d112dca0d8d3a1e239e958fce30c864751c3  vendor/ggml-source/src/ggml-cpu/amx/common.h
 0f95c80e0300eca3b3a3df07272042fee708425e19cd5f2c4cba7b253b26d226  vendor/ggml-source/src/ggml-cpu/amx/mmq.cpp
 bd33d0713b12daf9eedea1619dd715619baaa36b98c44ec754d532909d80933a  vendor/ggml-source/src/ggml-cpu/amx/mmq.h
+2dc6b116f732329effe45d3f9384d5ebae628f3c19e2f2ac69551fd2e3721917  vendor/ggml-source/src/ggml-cpu/arch-fallback.h
 85dde88928f52972294ed0f3c0a443389cf351a04ade43c973cc7b36b4b19dd4  vendor/ggml-source/src/ggml-cpu/arch/arm/cpu-feats.cpp
 9fccd3897db24c9df89b8431b588175894e5f54697cf45768d0c6e6c5544093e  vendor/ggml-source/src/ggml-cpu/arch/arm/quants.c
 2e7ba6aaf10834601315fc8f5e7f52a1638076bf6c0435542247c3de1ee4cce7  vendor/ggml-source/src/ggml-cpu/arch/arm/repack.cpp
@@ -284,7 +287,6 @@ defc3f28aa882d52a390d4573f5308ddc3aa95c5f487bbdaf311e7b0874493b3  vendor/ggml-so
 b0f6aaaeb0b12a4f3e15ceec14d0c2031633f91e864a6c15954a001d6390f6d4  vendor/ggml-source/src/ggml-cpu/arch/x86/cpu-feats.cpp
 3c489fdc77e3ab484a5f188bff9c60c0e9483c951ed65c1a562a04c249d5628e  vendor/ggml-source/src/ggml-cpu/arch/x86/quants.c
 c69735f83caf854172cac78eed2cbc022ef81c077e5f6aca55a49d3404a02331  vendor/ggml-source/src/ggml-cpu/arch/x86/repack.cpp
-2dc6b116f732329effe45d3f9384d5ebae628f3c19e2f2ac69551fd2e3721917  vendor/ggml-source/src/ggml-cpu/arch-fallback.h
 2df261aadce36a20f5e3bf6961d4ca27b8c2d461afc41488361ee6ad09c1730d  vendor/ggml-source/src/ggml-cpu/binary-ops.cpp
 5915519c4e2227db28239b2a5d3b8a5f9022730cc0ddb7880b24748ee78cd1f9  vendor/ggml-source/src/ggml-cpu/binary-ops.h
 c36807121bb1452dfb1ab39a7b366bd49f454c49b43b1df4b7c54f038c824d49  vendor/ggml-source/src/ggml-cpu/cmake/FindSIMD.cmake
@@ -703,6 +705,9 @@ cde00b9ccd118b9b7729c909fd81c719a7d74f153a353327d639e8193f682f43  vendor/ggml-so
 c7db58ab8fbb480d5f2e9f716d828f3df3b6a7c2d7307b5fa212bac5edf8e35a  vendor/ggml-source/src/ggml-et/ggml-et.cpp
 00d8487f4ebdc088304e59d4ef08987077323c8c4f8a3c1bfe58e10538ea0f83  vendor/ggml-source/src/ggml-hexagon/CMakeLists.txt
 7f8a4de24b7ccefbbaaa326a851f0b594ae8fc41861ddeb30a504f221c5fc096  vendor/ggml-source/src/ggml-hexagon/ggml-hexagon.cpp
+d7c346bc1c8bc1b00d8d5ba0090b58caf6a95ad1989c5f3fc7553969680cd2e3  vendor/ggml-source/src/ggml-hexagon/htp-drv.cpp
+d409bed19db5ae23e15775e7587656f51bd897068ef56909403606afc3f3e3f9  vendor/ggml-source/src/ggml-hexagon/htp-drv.h
+a56c3e1cebb59ab809f0e654894e1dbf3e164e41ec923fd44fcbb526dbc9edf2  vendor/ggml-source/src/ggml-hexagon/htp-opnode.h
 36a6332e95ff3cf7baa7e53962955bb2530c73cc10ce3148b096625d2165e5e1  vendor/ggml-source/src/ggml-hexagon/htp/CMakeLists.txt
 3dd2eca6ec48fa7e3c948a3bde8e7f9873414c2673e01a0c18bc4f8e691720a9  vendor/ggml-source/src/ggml-hexagon/htp/act-ops.c
 798afefad0d6cd46cb49dfcb7861dce632989a9da6eab34d49341810f81bbed4  vendor/ggml-source/src/ggml-hexagon/htp/argsort-ops.c
@@ -776,9 +781,6 @@ a2f3f690690b1a737a34c564e6e6819c9289a4cacd241b8677b6f7a225f23d09  vendor/ggml-so
 47f1451466ca899f6555138f1aa0b5fd28602ebd2840d48d11e1a29d3eed83df  vendor/ggml-source/src/ggml-hexagon/htp/unary-ops.h
 e12a0175e890c2c732bec6f338c597527d0548da4f6fe09c7aeb0816f766d419  vendor/ggml-source/src/ggml-hexagon/htp/work-queue.c
 966ab07319214aa2a1f46672db99959e4e0a7fb59001883282c102dfe617a6a4  vendor/ggml-source/src/ggml-hexagon/htp/work-queue.h
-d7c346bc1c8bc1b00d8d5ba0090b58caf6a95ad1989c5f3fc7553969680cd2e3  vendor/ggml-source/src/ggml-hexagon/htp-drv.cpp
-d409bed19db5ae23e15775e7587656f51bd897068ef56909403606afc3f3e3f9  vendor/ggml-source/src/ggml-hexagon/htp-drv.h
-a56c3e1cebb59ab809f0e654894e1dbf3e164e41ec923fd44fcbb526dbc9edf2  vendor/ggml-source/src/ggml-hexagon/htp-opnode.h
 af1f5aa8d4b3f38cfc450991aaed0eff430f0bdb2106b0a9644bfed559ee3bd3  vendor/ggml-source/src/ggml-hexagon/libdl.h
 d4458eee3612b9281be900c4a622e613262a52dacbdbab4a6b3e0d4abe6bb7b3  vendor/ggml-source/src/ggml-hexagon/libggml-htp.inf
 a9761856c498862828f88d791643d15dea65ec58d189d2d21a1891f3a506bb30  vendor/ggml-source/src/ggml-hip/CMakeLists.txt
@@ -1668,6 +1670,7 @@ eb431c09546ce129851e6adddf95ef9dd610f951e555293ffb7d8a52efbb32cb  vendor/stable-
 4287635730ac81773eebbb9159bb431395cd91a27520f0413cb0a4c2ca926346  vendor/stable-diffusion.cpp/src/extensions/generation_extension.h
 784692065b1f9c4ea71d4004432db043d87291adf1a8f96eb90d10a43c17d562  vendor/stable-diffusion.cpp/src/extensions/photomaker_extension.cpp
 25b8a63314949e1b4011bb69acf3cdb1499ca1b43c4d9280f72ae4d6d6c37ee0  vendor/stable-diffusion.cpp/src/extensions/pulid_extension.cpp
+b0c4e31d60ee69bb9d875f20aaca793031f3807e570f65f8f5d45c9e898fcb45  vendor/stable-diffusion.cpp/src/model.h
 368fa8d7d9d2f17882ced466e92f3b1f2409a1718b13bccf18a7e4bd7ce30f07  vendor/stable-diffusion.cpp/src/model/adapter/ip_adapter.hpp
 ec641a29b4a28124cb46e1fdbbf6e2822228816844d5656509cd7fd7785230f9  vendor/stable-diffusion.cpp/src/model/adapter/lora.hpp
 aa868cf8b16ddbb5cc389be05aebb667d7bd68d6ba4a54cee9483788ada019c6  vendor/stable-diffusion.cpp/src/model/adapter/lora_ops.cpp
@@ -1726,7 +1729,6 @@ ef00bccc53a7594af7d8fc68d0bc83ae5b12bd1090a205d40662e7775bf468e8  vendor/stable-
 d99171fb223968a7d1aa587b00d2fd050f6dd606ca2d9ba0ffcf73da838fe4af  vendor/stable-diffusion.cpp/src/model/vae/vae.hpp
 380d2179638adc0a291c4d17f1cc4f091e0bb7adcad1cc37231e8569085a810d  vendor/stable-diffusion.cpp/src/model/vae/vae_tiling.hpp
 30d253a6243f0c665e6ae1f031da8963c4c186dd588cc474cd3af9c57706d18c  vendor/stable-diffusion.cpp/src/model/vae/wan_vae.hpp
-b0c4e31d60ee69bb9d875f20aaca793031f3807e570f65f8f5d45c9e898fcb45  vendor/stable-diffusion.cpp/src/model.h
 28347e4f1a6b940ca2982cb8bedac780df275a01f3c6662a821b4f8ed3c99d31  vendor/stable-diffusion.cpp/src/model_component.h
 0ebd371a6e0d4d937a5ed43f54c2e32c217ee0f4f61db4fafb92f1d5c57fa399  vendor/stable-diffusion.cpp/src/model_io/binary_io.h
 976065ada0e5ab3b3d7d7581e1e853ea2f5653d0226a8e38d85ee80d35f09d55  vendor/stable-diffusion.cpp/src/model_io/gguf_io.cpp
