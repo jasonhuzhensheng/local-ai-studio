@@ -10,6 +10,7 @@ const pages={'/edit':'image_editor.html','/chat':'local_chat.html','/video':'vid
 try{
 const context=await browser.newContext({viewport:{width:1440,height:1000},locale:'zh-CN'});const errors=[];const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
 await context.route('**/*',async route=>{const u=new URL(route.request().url());if(u.hostname!=='studio-test.invalid')return route.abort();let file=pages[u.pathname];if(!file&&/^\/[a-z_]+\.mjs$/.test(u.pathname))file=u.pathname.slice(1);
+if(!file&&/^\/locales\/[A-Za-z-]+\.json$/.test(u.pathname))file=u.pathname.slice(1);
 if(file){const p=path.join(root,file);if(fs.existsSync(p))return route.fulfill({body:fs.readFileSync(p),contentType:file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':'text/javascript'});}
 if(u.pathname==='/api/auth/status')return route.fulfill({json:{initialized:true,canSetup:false,user:page.url().includes('/login')?null:{username:'demo_user',role:'user'}}});
 if(u.pathname==='/api/auth/login')return route.fulfill({status:401,json:{error:'用户名或密码错误，或账号已停用'}});
@@ -34,6 +35,19 @@ await page.waitForTimeout(50);assert.equal(await page.locator('.bubble').textCon
 if(url==='/login'){await page.locator('#login-form input[name=password]').fill('synthetic-password');await page.locator('#login-submit').click();await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Incorrect'));}
 await page.locator('[data-language-select]').selectOption('zh');await page.waitForFunction(()=>document.documentElement.lang==='zh-CN');assert.equal(await input.inputValue(),original);assert.equal(await page.locator('a[href="/edit"]').first().textContent(),'图片生成');
 await page.locator('[data-language-select]').selectOption('en');await page.reload();await page.waitForFunction(()=>document.documentElement.lang==='en');
+// Exercise every packaged catalog on each application page using synthetic data.
+for(const {code} of await page.evaluate(()=>StudioI18n.locales)){
+ await page.locator('[data-language-select]').selectOption(code);await page.waitForFunction(code=>StudioI18n.language===code,code);
+ await input.fill(original);assert.equal(await input.inputValue(),original);
+ assert.equal(await page.locator('a[href="/edit"]').first().textContent(),await page.evaluate(()=>StudioI18n.t('图片生成')));
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),url+' '+code+' desktop overflow');
+}
+await page.setViewportSize({width:390,height:844});
+for(const code of ['de','ja','th','hi','pt-BR','zh-TW']){
+ await page.locator('[data-language-select]').selectOption(code);await page.waitForFunction(code=>StudioI18n.language===code,code);
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),url+' '+code+' mobile overflow');
+}
+await page.setViewportSize({width:1440,height:1000});
 // UI translations never rewrite persisted chat messages.
 }
 await page.setViewportSize({width:390,height:844});await page.goto('https://studio-test.invalid/edit');await page.locator('[data-language-select]').waitFor();assert(await page.locator('[data-language-select]').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));

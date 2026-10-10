@@ -1,0 +1,70 @@
+日本語 | ../README.md
+これらのドキュメントは公開プロジェクトのテキストの機械翻訳であり、すべてがネイティブ スピーカーによってレビューされているわけではありません。技術的な曖昧さについては、英語または中国語のソースを参照してください。ユーザーのプライベートデータは含まれません。
+
+この新しいマシンに Local AI Studio ソース パッケージをデプロイします。既存のソースを移行します。同様の Web サイトを最初から再構築しないでください。
+
+1。
+README-FIRST.en.txt とソースを読んでください。
+OS、アーキテクチャ、メモリ、空きディスク、GPU、インストールされているツールを検査します。
+互換性をレポートします。
+Apple Silicon は検証済みのプラットフォームです。直接サポートを主張するのではなく、他のプラットフォームへの適応作業を特定します。
+2。
+~/Library/Application Support/LocalImageStudio: ソースには app、environments/engines/tasks には runtime、重みには models を使用します。
+app/.local -> ../runtime および runtime/image-models -> ../models. を設定します。
+iCloud Desktop/Documents. を避ける
+古いユーザー名、IP、またはテールネット ID を再利用しないでください。
+3。
+必要な安定したツール: Python 3.11、Node (ソース マシンは 25 を使用)、CMake、ビルド ツール、および LM Studio をインストールします。
+分離された環境を使用し、requirements/viggle-pinned.txt および src/h3_requirements.lock. とは別に image/video 依存関係をインストールします。
+バージョンが利用できないか互換性がない場合は、サイレント アップグレードではなく失敗を報告します。
+H3/ClipProj Apple の適応は実験的なものです。
+4。
+vendor/stable-diffusion.cpp と vendor/ggml-source を runtime にデプロイします。
+ソースにはすでに変更が含まれています。過去のパッチを 2 回適用しないでください。
+CMake 構成を使用します: -DSD_METAL=ON -DSD_WEBP=OFF -DSD_WEBM=OFF -DSD_GGML_SOURCE_DIR=<absolute ggml パス> -DCMAKE_BUILD_TYPE=Release.
+コードに必要な sd-cli およびその他のターゲットをビルドします。
+5。
+モデル JSON マニフェストと src/. の下のインストーラーを使用して、固定されたリビジョンをダウンロードします。
+サポートの再開とsizes/SHA256.の検証
+不足している信頼できるアップストリーム ハッシュを取得して記録します。決してハッシュを発明しないでください。
+memory/disk の容量に応じて実行可能なモジュールを選択します。黙って models を置き換えないでください。
+README で指定されたテキスト モデルを、コードで使用されるエイリアス (ローカル API ポート 1234) を使用して LM Studio にインストールします。
+古いアカウント設定をコピーしないでください。
+6。
+ビデオを video-experimental に個別にインストールします: https://github.com/comfyanonymous/ComfyUI からの ComfyUI および https://github.com/nicolab28/ComfyUI-ClipProj. からの ClipProj
+patches/ の下に記録されたコミットを固定し、各 deployed.patch を 1 回適用します。
+h3_apple_models.json アセットをダウンロードして確認します。
+メモリ保護を維持します。
+src/h3_apple_*.patch も適用しないでください。
+現在のコードでサポートされている resolution/frame/audio の組み合わせを確認してください。未検証の機能を拡張しないでください。
+7。
+ターゲット マシンのハードコーディングされた /Users/ パス、環境変数、モデル ディレクトリ、および実行可能ファイルを監査します。
+/edit、/chat、/video、タスク IDs/queues/progress、削除確認、バックグラウンド チャット タスクおよび参照を保存します。
+古い chats/tasks/reference イメージをインポートしないでください。
+中文/英語セレクターと言語設定を保持します。
+8。
+ソース定義の環境を使用して、ループバックで node app/src/image_gallery.mjs を開始します。
+HTTP とモデルの準備が整っているかを確認します。
+ポート 1235 (Web)、1234 (テキスト API)、8191 (ビデオ バックエンド) での競合を回避します。
+要求された場合にのみ、LAN/private Tailscale を構成します。パブリック Funnel を有効にしないでください。
+古いアドレスを再利用するのではなく、新しいデバイスのアドレスを読み取ります。
+9。
+関連する分離テストを実行します。
+新しく書かれた非機密プロンプトを使用して、完全なチャット応答、更新後の stop/reconnect、目視検査による実際の画像出力、および再生可能な短いビデオを確認します。
+レコード time/dimensions/memory.
+HTTP 200 またはファイルの存在だけでは受け付けられません。
+10。
+ローカル ユーザー ログイン後の起動を構成し、表示名 Local AI Studio を設定します。
+ログイン前操作が要求された場合は、最初に OS/FileVault 制約を確認してください。
+ログイン LaunchAgent はログインなしでは起動しません。
+11。
+ローカル展開手順、start/stop コマンド、paths/model/dependency バージョン、検証結果を保存します。
+無関係なプライベート ファイルを読まないでください。
+ユーザーに管理者パスワードまたはアカウント ログインを入力させます。他の承認されたインストール作業を続行してください。
+残りのブロッカーを説明し、未実行のチェックが合格したとは決して主張しないでください。
+12。
+Web サイト認証はデフォルトで有効になっています。
+ユーザーにローカル /setup で最初の管理者を作成してもらい、認証されたビジネス API をテストしてもらいます。
+認証されていない /api/models が 401 を返すことが予想されます。
+認証を無効にしたり、古いアカウント データベースをコピーしたりしないでください。
+docs/accounts.en.md.を参照

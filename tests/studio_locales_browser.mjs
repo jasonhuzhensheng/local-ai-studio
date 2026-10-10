@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';
+const {chromium}=await import(process.env.STUDIO_PLAYWRIGHT_MODULE||'playwright');const root=path.resolve(process.env.STUDIO_TEST_SOURCE||fileURLToPath(new URL('../src',import.meta.url)));
+const b=await chromium.launch({headless:true,...(process.env.STUDIO_TEST_BROWSER?{executablePath:process.env.STUDIO_TEST_BROWSER}:{})});
+try{const c=await b.newContext({viewport:{width:1360,height:960},locale:'en-US'});const p=await c.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
+await c.route('**/*',async r=>{const u=new URL(r.request().url());if(u.hostname!=='studio-test.invalid')return r.abort();
+ const map={'/login':'studio_account.html','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css'};let f=map[u.pathname];if(/^\/locales\/[A-Za-z-]+\.json$/.test(u.pathname))f=u.pathname.slice(1);
+ if(f)return r.fulfill({body:fs.readFileSync(path.join(root,f)),contentType:f.endsWith('.html')?'text/html':f.endsWith('.css')?'text/css':f.endsWith('.json')?'application/json':'text/javascript'});
+ if(u.pathname==='/api/auth/status')return r.fulfill({json:{initialized:true,user:null,canSetup:false}});return r.fulfill({status:404,body:''});});
+await p.goto('https://studio-test.invalid/login');await p.locator('[data-language-select]').waitFor();const locales=await p.evaluate(()=>StudioI18n.locales);
+for(const {code} of locales){await p.locator('[data-language-select]').selectOption(code);await p.waitForFunction(code=>StudioI18n.language===code,code);await p.locator('#login-form input[name=username]').fill('demo_only');assert.equal(await p.locator('#login-form input[name=username]').inputValue(),'demo_only');assert.equal(await p.evaluate(()=>localStorage.getItem('studio-ui-language')),code);assert((await p.locator('#title').textContent()).length>0);assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}
+for(const code of ['de','ja','th','hi','pt-BR','zh-TW']){await p.setViewportSize({width:390,height:844});await p.locator('[data-language-select]').selectOption(code);await p.waitForFunction(code=>StudioI18n.language===code,code);assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),code);}
+await p.reload();await p.waitForFunction(()=>StudioI18n.language==='zh-TW');assert.deepEqual(errors,[]);console.log('All 33 menu entries load and render; six writing systems/dialects fit mobile; reload and input preservation passed.');
+}finally{await b.close();}

@@ -1,7 +1,7 @@
 /* Local UI translation only. Never translate user prompts, messages, inputs or history titles. */
 (() => {
   'use strict';
-  const messages = {
+  let messages = {
   "0.92 秒": "0.92 seconds",
   "1152×1536样图分项测试：48解码快约10%，权重驻留采样快约5%。估算整张约快7%；组合效果未单独实测。小图与WAI不启用。": "1152×1536 component test: tile-48 decoding was about 10% faster and resident-weight sampling about 5% faster. Estimated overall gain: 7%; the combination has not been tested separately. Not enabled for small images or WAI.",
   "1280×736 · 16:9 / 0.92秒 / 无声": "1280×736 · 16:9 / 0.92s / silent",
@@ -537,78 +537,101 @@
 };
   messages["重置 {0} 的密码"] = "Reset password for {0}";
   Object.assign(messages, {'快速预览':'Quick preview','2K 方图':'2K square','iPhone 壁纸':'iPhone wallpaper','MacBook 壁纸':'MacBook wallpaper','{0}步':'{0} steps'});
+  const locales = [["bg", "Български"], ["cs", "Čeština"], ["da", "Dansk"], ["de", "Deutsch"], ["el", "Ελληνικά"], ["en", "English"], ["es", "Español"], ["fi", "Suomi"], ["fr", "Français"], ["hi", "हिन्दी"], ["hr", "Hrvatski"], ["hu", "Magyar"], ["id", "Bahasa Indonesia"], ["it", "Italiano"], ["ja", "日本語"], ["ko", "한국어"], ["lt", "Lietuvių"], ["ms", "Bahasa Melayu"], ["nb", "Norsk (bokmål)"], ["nl", "Nederlands"], ["pl", "Polski"], ["pt-BR", "Português (Brasil)"], ["pt", "Português"], ["ro", "Română"], ["ru", "Русский"], ["sk", "Slovenčina"], ["sl", "Slovenščina"], ["sv", "Svenska"], ["th", "ภาษาไทย"], ["tr", "Türkçe"], ["vi", "Tiếng Việt"], ["zh", "简体中文"], ["zh-TW", "繁體中文"]];
   const storageKey = 'studio-ui-language';
-  const supported = value => value === 'en' ? 'en' : 'zh';
-  let language = 'zh';
-  try { language = supported(localStorage.getItem(storageKey) || (navigator.language.startsWith('zh') ? 'zh' : 'en')); } catch {}
-  const escape = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const templates = Object.entries(messages).filter(([key]) => /\{\d+\}/.test(key)).map(([key, value]) => {
-    const indexes = [];
-    const pattern = key.split(/(\{\d+\})/).map(part => /^\{\d+\}$/.test(part) ? (indexes.push(Number(part.slice(1,-1))), '(.*?)') : escape(part)).join('');
-    return {key, value, indexes, regex: new RegExp('^' + pattern + '$', 's')};
-  }).sort((a,b) => b.key.replace(/\{\d+\}/g,'').length - a.key.replace(/\{\d+\}/g,'').length);
-  const fragments = Object.entries(messages).filter(([key]) => !/\{\d+\}/.test(key) && key.trim().length >= 5).sort((a,b)=>b[0].length-a[0].length);
-  function english(text, depth = 0) {
-    if (Object.hasOwn(messages,text)) return messages[text];
-    if (text.trim() !== text) return text.slice(0,text.length-text.trimStart().length) + english(text.trim(),depth+1) + text.slice(text.trimEnd().length);
-    if (!/[\u3400-\u9fff]/.test(text) || depth > 8) return text;
-    for (const entry of templates) {
-      const match = entry.regex.exec(text);
-      if (!match) continue;
-      const values = new Map(entry.indexes.map((index,i)=>[index,english(match[i+1],depth+1)]));
-      return entry.value.replace(/\{(\d+)\}/g,(_,index)=>values.get(Number(index)) ?? '');
-    }
-    // Composite UI messages join existing labels. Do not apply this function to user-owned nodes.
-    if (text.includes(' · ')) return text.split(' · ').map(part=>english(part,depth+1)).join(' · ');
-    let output='', remaining=text;
-    while (remaining) {
-      const entry=fragments.find(([key])=>remaining.startsWith(key));
-      if(entry){output+=entry[1];remaining=remaining.slice(entry[0].length);}else{output+=remaining[0];remaining=remaining.slice(1);}
-    }
+  const catalogs = new Map([['en',messages]]);
+  const supported = value => {
+    const code=String(value||'').replace(/_/g,'-').toLowerCase();
+    const exact=locales.find(([id])=>id.toLowerCase()===code);if(exact)return exact[0];
+    if(/^zh-(?:tw|hk|mo|hant)(?:-|$)/.test(code))return 'zh-TW';
+    if(code.startsWith('zh'))return 'zh';
+    if(code==='no'||code.startsWith('no-')||code.startsWith('nb-'))return 'nb';
+    if(code.startsWith('pt-br'))return 'pt-BR';
+    return locales.find(([id])=>id===code.split('-')[0])?.[0]||'en';
+  };
+  let preferred='zh';
+  try{preferred=supported(localStorage.getItem(storageKey)||navigator.language);}catch{preferred=supported(navigator.language);}
+  let language=['en','zh'].includes(preferred)?preferred:'en';
+  let templates=[],fragments=[],version=0,selector,status;
+  const escape=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  function compile(){
+    const entries=Object.entries(messages);
+    templates=entries.filter(([key])=>/\{\d+\}/.test(key)).map(([key,value])=>{
+      const indexes=[];
+      const pattern=key.split(/(\{\d+\})/).map(part=>/^\{\d+\}$/.test(part)?(indexes.push(Number(part.slice(1,-1))),'(.*?)'):escape(part)).join('');
+      return {key,value,indexes,regex:new RegExp('^'+pattern+'$','s')};
+    }).sort((a,b)=>b.key.replace(/\{\d+\}/g,'').length-a.key.replace(/\{\d+\}/g,'').length);
+    fragments=entries.filter(([key])=>!/\{\d+\}/.test(key)&&key.trim().length>=5).sort((a,b)=>b[0].length-a[0].length);
+  }
+  compile();
+  function translated(text,depth=0){
+    if(Object.hasOwn(messages,text))return messages[text];
+    if(text.trim()!==text)return text.slice(0,text.length-text.trimStart().length)+translated(text.trim(),depth+1)+text.slice(text.trimEnd().length);
+    if(!/[\u3400-\u9fff]/.test(text)||depth>8)return text;
+    for(const entry of templates){const match=entry.regex.exec(text);if(!match)continue;const values=new Map(entry.indexes.map((index,i)=>[index,translated(match[i+1],depth+1)]));return entry.value.replace(/\{(\d+)\}/g,(_,index)=>values.get(Number(index))??'');}
+    if(text.includes(' · '))return text.split(' · ').map(part=>translated(part,depth+1)).join(' · ');
+    let output='',remaining=text;
+    while(remaining){const entry=fragments.find(([key])=>remaining.startsWith(key));if(entry){output+=entry[1];remaining=remaining.slice(entry[0].length);}else{output+=remaining[0];remaining=remaining.slice(1);}}
     return output;
   }
-  function t(text) { return language === 'en' ? english(String(text)) : String(text); }
-  const ignored = 'script,style,textarea,input,pre,code,.bubble,.history-title,.prompt-text,.card h3,[data-i18n-ignore]';
-  const originals = new WeakMap();
-  function convert(target, field, value) {
+  function t(text){return language==='zh'?String(text):translated(String(text));}
+  const ignored='script,style,textarea,input,pre,code,.bubble,.history-title,.prompt-text,.card h3,[data-i18n-ignore]';
+  const originals=new WeakMap();
+  function convert(target,field,value){
     let fields=originals.get(target);if(!fields){fields=new Map();originals.set(target,fields);}
-    let record=fields.get(field);
-    if(!record || value!==record.rendered) record={source:value,rendered:value};
-    const translated=t(record.source);
-    record.rendered=translated;fields.set(field,record);return translated;
+    let record=fields.get(field);if(!record||value!==record.rendered)record={source:value,rendered:value};
+    const result=t(record.source);record.rendered=result;fields.set(field,record);return result;
   }
-  let observer, scheduled=false;
+  let observer,scheduled=false,started=false;
   const config={subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label','alt']};
-  function render() {
-    scheduled=false;observer?.disconnect();
-    document.documentElement.lang=language==='en'?'en':'zh-CN';
+  function render(){
+    if(!started)return;
+    scheduled=false;observer?.disconnect();document.documentElement.lang=language==='zh'?'zh-CN':language;
     const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-    while(walker.nextNode()){
-      const node=walker.currentNode;
-      if(!node.parentElement || node.parentElement.closest(ignored))continue;
-      const next=convert(node,'text',node.data);if(next!==node.data)node.data=next;
-    }
+    while(walker.nextNode()){const node=walker.currentNode;if(!node.parentElement||node.parentElement.closest(ignored))continue;const next=convert(node,'text',node.data);if(next!==node.data)node.data=next;}
     for(const element of document.querySelectorAll('[placeholder],[title],[aria-label],[alt]')){
-      // Input values stay untouched; translate only their UI hints.
       if(element.closest('[data-i18n-ignore],.bubble,.history-title,.prompt-text,.card h3,pre,code'))continue;
-      for(const attribute of ['placeholder','title','aria-label','alt'])if(element.hasAttribute(attribute)){
-        const before=element.getAttribute(attribute),after=convert(element,attribute,before);if(before!==after)element.setAttribute(attribute,after);
-      }
+      for(const attribute of ['placeholder','title','aria-label','alt'])if(element.hasAttribute(attribute)){const before=element.getAttribute(attribute),after=convert(element,attribute,before);if(before!==after)element.setAttribute(attribute,after);}
     }
     const title=document.querySelector('title');if(title)title.textContent=convert(title,'title',title.textContent);
-    document.querySelectorAll('[data-language-select]').forEach(select=>select.value=language);
-    observer?.observe(document.body,config);
+    if(selector)selector.value=language;observer?.observe(document.body,config);
   }
-  function setLanguage(value){language=supported(value);try{localStorage.setItem(storageKey,language);}catch{}render();}
+  function validateCatalog(data){
+    const source=catalogs.get('en');if(!data||Array.isArray(data)||typeof data!=='object'||Object.keys(data).length!==Object.keys(source).length)throw Error('Incomplete catalog');
+    for(const key of Object.keys(source)){
+      if(!Object.hasOwn(data,key)||typeof data[key]!=='string'||(source[key].trim()&&!data[key].trim()))throw Error('Invalid catalog');
+      const slots=value=>(value.match(/\{\d+\}/g)||[]).sort().join(',');if(slots(data[key])!==slots(source[key]))throw Error('Invalid placeholders');
+    }
+    return Object.freeze(data);
+  }
+  async function setLanguage(value,{persist=true}={}){
+    const desired=supported(value),request=++version;
+    if(status){status.textContent='';status.hidden=true;}
+    if(!['zh','en'].includes(desired)&&!catalogs.has(desired)){
+      if(status){status.hidden=false;status.textContent='Loading… / 加载中…';}
+      try{
+        const response=await fetch('/locales/'+encodeURIComponent(desired)+'.json',{cache:'no-cache'});
+        if(!response.ok)throw Error('Catalog unavailable');catalogs.set(desired,validateCatalog(await response.json()));
+      }catch{
+        if(request===version){if(selector)selector.value=language;if(status){status.hidden=false;status.textContent='Unable to load language. Please retry. / 语言加载失败，请重试。';}}
+        return false;
+      }
+    }
+    if(request!==version)return false;
+    language=desired;preferred=desired;if(language!=='zh'){messages=catalogs.get(language);compile();}
+    if(persist)try{localStorage.setItem(storageKey,language);}catch{}
+    if(status){status.textContent='';status.hidden=true;}render();return true;
+  }
   function start(){
-    const label=document.createElement('label');label.className='studio-language';label.dataset.i18nIgnore='';label.append(document.createTextNode('语言 / Language '));
-    const select=document.createElement('select');select.dataset.languageSelect='';select.setAttribute('aria-label','界面语言 / Interface language');
-    for(const [value,text] of [['zh','中文'],['en','English']]){const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);}
-    select.value=language;select.addEventListener('change',()=>setLanguage(select.value));label.append(select);
+    started=true;const label=document.createElement('label');label.className='studio-language';label.dataset.i18nIgnore='';label.append(document.createTextNode('🌐 '));
+    selector=document.createElement('select');selector.dataset.languageSelect='';selector.setAttribute('aria-label','Language / 语言');selector.title='Language / 语言';
+    for(const [value,text] of locales){const option=document.createElement('option');option.value=value;option.textContent=text;option.lang=value==='zh'?'zh-CN':value;selector.append(option);}
+    selector.value=language;selector.addEventListener('change',()=>setLanguage(selector.value));label.append(selector);
+    status=document.createElement('span');status.className='studio-language-status';status.setAttribute('role','status');status.hidden=true;label.append(status);
     (document.querySelector('header .header-actions')||document.querySelector('header')||document.body).append(label);
-    observer=new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(render);}});render();
+    observer=new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(render);}});render();void setLanguage(preferred,{persist:false});
   }
-  window.StudioI18n=Object.freeze({t,setLanguage,get language(){return language;}});
-  window.addEventListener('storage',event=>{if(event.key===storageKey){language=supported(event.newValue);render();}});
+  window.StudioI18n=Object.freeze({t,setLanguage,supported,locales:Object.freeze(locales.map(([code,name])=>Object.freeze({code,name}))),get language(){return language;}});
+  window.addEventListener('storage',event=>{if(event.key===storageKey)void setLanguage(event.newValue||navigator.language,{persist:false});});
   if(document.readyState!=='complete')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

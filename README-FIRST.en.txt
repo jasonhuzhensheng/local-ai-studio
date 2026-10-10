@@ -21,4 +21,4 @@ Text model: huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF, file Huihui-Qwen3.8-2
 
 A fresh-machine installation has not been validated. Review original-machine paths, model aliases and system tool paths for the target user. Do not reapply historical patches to already-modified vendor source. A successful download is not evidence of successful inference or acceptable quality.
 
-The interface offers 中文 / English on image, chat, video and account pages. The browser remembers the selection. User prompts and conversation content are not translated.
+The upper-right language menu offers 33 languages on image, chat, video and account pages. Language documentation: docs/i18n/README.md. The browser remembers the selection. User prompts and conversation content are not translated.

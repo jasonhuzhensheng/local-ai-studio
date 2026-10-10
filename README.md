@@ -1,12 +1,14 @@
 # MacBook Pro Studio
 
-**English** | [简体中文](README.zh-CN.md)
+**English** | [简体中文](README.zh-CN.md) | [🌐 All 33 languages](docs/i18n/README.md)
 
 A local image, chat and experimental video studio for Apple Silicon Macs.
 
 ## Interface language
 
-Choose **中文 / English** at the top of the image, chat, video or account page. The preference is stored in this browser and survives refreshes. Switching does not reload the page or rewrite prompts, chat messages or history titles. The first visit follows the browser language; switching still works for the current page if preference storage is unavailable.
+Use the language menu in the upper-right corner of the image, chat, video or account page. It offers **33 languages**, including English, Spanish, Japanese, Korean, Simplified/Traditional Chinese, and Brazilian/European Portuguese. The browser remembers your choice; the first visit follows your browser language. Switching preserves prompts, chat messages, history titles and current form input.
+
+Translations are bundled locally and do not call a cloud translation service during use. The additional catalogs and manuals are machine translated; see the [language index](docs/i18n/README.md) for all editions and review status. Operating-system file dialogs and unstructured upstream errors may retain their original language.
 
 ## Interface previews
 

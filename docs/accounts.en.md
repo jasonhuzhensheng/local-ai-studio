@@ -8,7 +8,7 @@ On the Mac running the service, open `http://127.0.0.1:1235/setup` to create the
 
 After setup, unauthenticated devices see the sign-in page. Open **Account / Sign out** (`/account`) to change your password or sign out. Administrators can create users/administrators, reset passwords, disable/enable accounts, change roles and delete accounts. Deletion and permission changes require confirmation. The server prevents deleting, disabling or demoting the last enabled administrator. Deleting an account does not delete shared tasks.
 
-Choose **中文 / English** at the top, including on sign-in and setup pages. This preference belongs to the browser; it does not change usernames or account permissions.
+Choose from **33 languages** at the upper right, including on sign-in and setup pages. This preference belongs to the browser; it does not change usernames or account permissions.
 
 This is a shared studio. Signed-in users share access to images, videos and server-side chat tasks. Browser chat history remains in localStorage. There is no multi-tenant isolation, per-user task storage or billing. The existing local-only video restriction remains.
 

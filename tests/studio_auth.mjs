@@ -15,6 +15,8 @@ try{
  for(const route of ['/i18n.js','/i18n.css']){const asset=await call(route);assert.equal(asset.status,200,route);assert.match(asset.headers.get('content-type'),route.endsWith('.js')?/javascript/:/css/);assert.ok((await asset.text()).length>0);}
 
  for(const route of ['/api/jobs','/api/models','/api/video-jobs','/api/chat-tasks/123','/images/00000000-0000-0000-0000-000000000000.png','/references/00000000-0000-0000-0000-000000000000.png','/base-images/00000000-0000-0000-0000-000000000000.png','/videos/00000000-0000-0000-0000-000000000000.mp4'])assert.equal((await call(route)).status,401,route);
+ for(const route of ['/locales/es.json','/locales/de.json']){const response=await call(route);assert.equal(response.status,200);assert.match(response.headers.get('content-type'),/application\/json/);const catalog=await response.json();assert.ok(Object.keys(catalog).length>500);}
+ for(const route of ['/locales/unknown.json','/locales/%2e%2e/studio_auth.mjs'])assert.notEqual((await call(route)).status,200);
  assert.equal((await call('/edit')).headers.get('location'),'/setup');
  assert.equal((await call('/api/auth/setup',{username:'admin',password:pw},'','http://evil.test')).status,403);
  assert.equal((await call('/api/auth/setup',{username:'admin',password:'short'})).status,400);

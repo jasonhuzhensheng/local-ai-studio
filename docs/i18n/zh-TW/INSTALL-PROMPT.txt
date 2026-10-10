@@ -1,0 +1,70 @@
+繁體中文 | ../README.md
+這些文件由公開專案文字經機器翻譯而成，尚未全部經過母語人士審校。如有技術歧義，請查閱英文或簡體中文來源。不包含私人使用者資料。
+
+在這台新機器上部署 Local AI Studio 原始碼套件。遷移現有來源；不要從頭開始重建類似的網站。
+
+1。
+閱讀 README-FIRST.en.txt 和原始碼。
+檢查作業系統、架構、記憶體、可用磁碟、GPU 和已安裝的工具。
+報告相容性。
+Apple Silicon是經過驗證的平台；確定其他平台的適應工作，而不是聲稱直接支援。
+2。
+使用 ~/Library/Application Support/LocalImageStudio：app 為來源，runtime 為 environments/engines/tasks，models 為權重。
+設定 app/.local -> ../runtime 和 runtime/image-models -> ../models.
+避免 iCloud Desktop/Documents.
+不要重複使用舊的使用者名稱、IP 或 Tailnet 身分。
+3。
+安裝所需的穩定工具：Python、3.11、Node（源機使用25）、CMake、建造工具和LM Studio。
+使用隔離環境並與 requirements/viggle-pinned.txt 和 src/h3_requirements.lock. 分開安裝 image/video 依賴項
+如果版本不可用或不相容，請報告失敗，而不是靜默升級。
+Apple 的 H3/ClipProj 改編是實驗性的。
+4。
+將vendor/stable-diffusion.cpp和vendor/ggml-source部署到runtime中。
+原始程式碼已包含更改；不要兩次套用歷史補丁。
+使用CMake設定：-DSD_METAL=ON -DSD_WEBP=OFF -DSD_WEBM=OFF -DSD_GGML_SOURCE_DIR=<absolute ggml路徑> -DCMAKE_BUILD_TYPE=Release.
+建構 sd-cli 和程式碼所需的其他目標。
+5。
+使用 JSON 清單和 src/. 下的安裝程式下載固定修訂版本
+支援恢復和驗證sizes/SHA256.
+取得遺失的可信上游雜湊並記錄它們；永遠不要發明雜湊。
+根據memory/disk容量選擇可運行模組；不要默默地取代models。
+使用程式碼使用的別名本機 API 連接埠 1234 在 LM Studio 中安裝 README 指定的文字模型。
+不要複製舊的帳戶配置。
+6。
+分別在video-experimental中安裝影片：https://github.com/comfyanonymous/ComfyUI中的ComfyUI和https://github.com/nicolab28/ComfyUI-ClipProj.中的ClipProj
+固定 patches/ 下記錄的提交，並套用每個 deployed.patch 一次。
+下載並驗證h3_apple_models.json資產。
+保留記憶體保護。
+不要同時套用 src/h3_apple_*.patch。
+检查当前代码支持的resolution/frame/audio组合；不要扩展未经验证的功能。
+7。
+審核目標電腦的硬編碼 /Users/ 路徑、環境變數、模型目錄和執行檔。
+保留/編輯、/聊天、/視訊、任務IDs/queues/progress、刪除確認、後台聊天任務和參考。
+不要匯入舊的 chats/tasks/reference 影像。
+保留中文/英文选择器和语言首选项。
+8。
+在源定义环境的环回上启动 node app/src/image_gallery.mjs。
+驗證 HTTP 和模型準備。
+避免連接埠 1235（Web）、1234（文字 API）、8191（視訊後端）上的衝突。
+僅在需要時配置 LAN/private Tailscale；不要啟用公共 Funnel。
+读取新设备的地址，而不是重复使用旧地址。
+9。
+運行相關的隔離測試。
+全新編寫的非敏感提示，驗證完整的聊天回复，刷新後stop/reconnect，目測真實影像輸出，可播放短影片。
+记录time/dimensions/memory.
+HTTP 200 或檔案單獨存在不被接受。
+10。
+配置本地用户登录后启动，显示名称Local AI Studio。
+如果請求預先登入操作，請先檢查 OS/FileVault 約束。
+登入 LaunchAgent 未登入則無法啟動。
+11。
+儲存本機部署指令、start/stop指令、paths/model/dependency版本和驗證結果。
+不要讀取不相關的私人文件。
+讓使用者輸入管理員密碼或帳號登入；繼續其他授權的安裝工作。
+說明剩餘的阻止者，並且永遠不要聲稱未執行的檢查已通過。
+12。
+預設啟用網站身份驗證。
+讓使用者在本機 /setup 建立第一個管理員，然後測試經過驗證的業務 API。
+未經身份驗證的 /api/models 預計會返回 401。
+不要停用身份驗證或複製舊帳戶資料庫。
+見docs/accounts.en.md.

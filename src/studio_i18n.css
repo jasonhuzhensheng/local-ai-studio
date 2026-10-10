@@ -3,9 +3,13 @@
 .studio-language select{width:auto;min-width:88px;font:inherit;color:inherit;background:#fff;border:1px solid #cbd5ca;border-radius:8px;padding:8px}
 header:has(.studio-language){height:auto;min-height:64px;flex-wrap:wrap}
 .header-actions:has(.studio-language){flex-wrap:wrap}
-html[lang=en] .entry-nav{flex-wrap:wrap}
+html:not([lang=zh-CN]):not([lang=zh-TW]) .entry-nav{flex-wrap:wrap}
 @media(max-width:850px){.studio-language{margin:8px 0}header:has(.studio-language){padding-top:12px;padding-bottom:12px}}
-html[lang=en] .composer .controls{flex-wrap:wrap;align-items:flex-start}
-html[lang=en] .composer .options{flex-wrap:wrap;flex:1 1 440px}
-html[lang=en] .composer .options select{max-width:100%;width:auto}
-html[lang=en] .composer .buttons{flex:0 0 auto;white-space:nowrap}
+html:not([lang=zh-CN]):not([lang=zh-TW]) .composer .controls{flex-wrap:wrap;align-items:flex-start}
+html:not([lang=zh-CN]):not([lang=zh-TW]) .composer .options{flex-wrap:wrap;flex:1 1 440px}
+html:not([lang=zh-CN]):not([lang=zh-TW]) .composer .options select{max-width:100%;width:auto}
+html:not([lang=zh-CN]):not([lang=zh-TW]) .composer .buttons{flex:0 0 auto;white-space:nowrap}
+
+.studio-language{margin-inline-start:auto;position:relative}
+.studio-language select{max-width:min(240px,70vw)}
+.studio-language-status{position:absolute;right:0;top:100%;z-index:5;padding:8px;background:#fff;border:1px solid #cbd5ca;border-radius:8px;white-space:normal;min-width:200px}

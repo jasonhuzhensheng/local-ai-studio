@@ -1,0 +1,70 @@
+Türkçe | ../README.md
+Bu belgeler, kamuya açık proje metninin makine çevirileridir ve tümü anadili İngilizce olan kişiler tarafından incelenmemiştir. Teknik belirsizlik için İngilizce veya Çince kaynağa başvurun. Hiçbir özel kullanıcı verisi dahil edilmemiştir.
+
+Local AI Studio kaynak paketini bu yeni makineye dağıtın. Mevcut kaynağı taşıyın; Benzer bir web sitesini sıfırdan yeniden inşa etmeyin.
+
+1.
+README-FIRST.en.txt'yi ve kaynağı okuyun.
+İşletim sistemini, mimariyi, belleği, boş diski, GPU'yu ve kurulu araçları inceleyin.
+Rapor uyumluluğu.
+Apple Silicon doğrulanmış platformdur; Doğrudan destek talep etmek yerine diğer platformlar için uyarlama çalışmalarını belirleyin.
+2.
+Kaynak için ~/Library/Application Support/LocalImageStudio: app, environments/engines/tasks için runtime, ağırlıklar için models kullanın.
+app/.local'yi ayarlayın -> ../runtime ve runtime/image-models -> ../models.
+iCloud Desktop/Documents.'den kaçının
+Eski kullanıcı adlarını, IP'leri veya Tailnet kimliklerini yeniden kullanmayın.
+3.
+Gerekli kararlı araçları yükleyin: Python 3.11, Node (kaynak makinede 25 kullanıldı), CMake, derleme araçları ve LM Studio.
+Yalıtılmış ortamlar kullanın ve image/video bağımlılıklarını requirements/viggle-pinned.txt ve src/h3_requirements.lock.'den ayrı olarak yükleyin
+Bir sürüm mevcut değilse veya uyumsuzsa sessizce yükseltme yapmak yerine hatayı bildirin.
+H3/ClipProj Apple uyarlaması deneyseldir.
+4.
+vendor/stable-diffusion.cpp ve vendor/ggml-source'yi runtime'ye dağıtın.
+Kaynak zaten değişiklikleri içeriyor; Geçmiş yamaları iki kez uygulamayın.
+CMake yapılandırmasını kullanın: -DSD_METAL=ON -DSD_WEBP=OFF -DSD_WEBM=OFF -DSD_GGML_SOURCE_DIR=<absolute ggml yolu> -DCMAKE_BUILD_TYPE=Release.
+sd-cli ve kodun gerektirdiği diğer hedefleri oluşturun.
+5.
+src/. altındaki model JSON bildirimlerini ve yükleyicileri kullanarak sabitlenmiş revizyonları indirin.
+Destek özgeçmişi ve sizes/SHA256.'yi doğrulayın
+Eksik olan yerlerde güvenilir yukarı akış karmalarını elde edin ve bunları kaydedin; asla karmaları icat etmeyin.
+Çalıştırılabilir modülleri memory/disk kapasitesine göre seçin; models'yi sessizce değiştirmeyin.
+README tarafından belirtilen metin modelini LM Studio koduna, yerel API bağlantı noktası 1234 kodu tarafından kullanılan takma adla yükleyin.
+Eski hesap yapılandırmasını kopyalamayın.
+6.
+Videoyu video-experimental'ye ayrı olarak yükleyin: https://github.com/comfyanonymous/ComfyUI'den ComfyUI ve https://github.com/nicolab28/ComfyUI-ClipProj.'den ClipProj
+patches/ altında kaydedilen taahhütleri sabitleyin ve her deployed.patch'yi bir kez uygulayın.
+h3_apple_models.json varlıklarını indirin ve doğrulayın.
+Bellek korumasını koruyun.
+src/h3_apple_*.patch'i de uygulamayın.
+Mevcut kodun desteklenen resolution/frame/audio kombinasyonlarını kontrol edin; doğrulanmamış yetenekleri genişletmeyin.
+7.
+Hedef makine için sabit kodlanmış /Users/ yollarını, ortam değişkenlerini, model dizinlerini ve yürütülebilir dosyaları denetleyin.
+Koruma /düzenleme, /sohbet, /video, IDs/queues/progress görevi, silme onayı, arka planda sohbet görevleri ve referanslar.
+Eski chats/tasks/reference görüntülerini içe aktarmayın.
+中文 / İngilizce seçiciyi ve dil tercihini koruyun.
+8.
+Kaynak tanımlı ortamla geri döngüde node app/src/image_gallery.mjs'yi başlatın.
+HTTP ve model hazırlığını doğrulayın.
+1235 (web), 1234 (metin API'si), 8191 (video arka ucu) bağlantı noktalarında çakışmaları önleyin.
+LAN/private Tailscale'yi yalnızca istendiğinde yapılandırın; genel Funnel'yi etkinleştirmeyin.
+Eski bir adresi tekrar kullanmak yerine yeni cihazın adresini okuyun.
+9.
+İlgili izole testleri çalıştırın.
+Yeni yazılan hassas olmayan istemlerle, tam sohbet yanıtlarını, yenileme sonrasında stop/reconnect'yi, görsel incelemeyle gerçek görüntü çıktısını ve oynatılabilir kısa videoyu doğrulayın.
+time/dimensions/memory.'yi kaydedin
+HTTP 200 veya dosyanın varlığı tek başına kabul değildir.
+10.
+Yerel kullanıcı oturum açtıktan sonra başlatmayı yapılandırın, görünen ad Local AI Studio.
+Oturum açma öncesi işlem istenirse öncelikle OS/FileVault kısıtlamalarını kontrol edin.
+Oturum açma LaunchAgent, oturum açmadan başlatılmaz.
+11.
+Yerel dağıtım talimatlarını, start/stop komutlarını, paths/model/dependency sürümlerini ve doğrulama sonuçlarını kaydedin.
+İlgisiz özel dosyaları okumayın.
+Kullanıcının yönetici şifrelerini veya hesap oturum açma bilgilerini girmesine izin verin; diğer yetkili kurulum çalışmalarına devam edin.
+Kalan engelleyicileri belirtin ve asla gerçekleştirilmeyen kontrollerin başarılı olduğunu iddia etmeyin.
+12.
+Web sitesi kimlik doğrulaması varsayılan olarak etkindir.
+Kullanıcının yerel /setup konumunda ilk yöneticiyi oluşturmasını ve ardından kimliği doğrulanmış iş API'lerini test etmesini sağlayın.
+Kimliği doğrulanmamış /api/models'nin 401 döndürmesi bekleniyor.
+Kimlik doğrulamayı devre dışı bırakmayın veya eski bir hesap veritabanını kopyalamayın.
+Bkz. docs/accounts.en.md.
