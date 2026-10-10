@@ -162,3 +162,13 @@ body.brick-studio{margin:0;min-height:100vh;color:#e7eef4;background:radial-grad
 @media(max-width:850px){.brick-studio.studio-chat .layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"composer" "messages" "history"}.brick-studio.studio-chat .composer textarea{min-height:100px}}
 
 .brick-studio a.myai-home{display:inline-flex;padding:0;border:0;border-radius:9px;background:transparent;line-height:0;text-decoration:none}.brick-studio a.myai-home:focus-visible{outline:3px solid #19e8f4;outline-offset:5px}
+
+/* Offline update history. */
+.brick-studio #studio-updates{width:min(680px,calc(100vw - 28px));max-height:80vh;padding:24px;background:#14212c;color:#edf5fa;border:1px solid #486879;border-radius:12px;overflow:auto}
+.brick-studio #studio-updates::backdrop{background:#000b}
+.brick-studio #studio-updates .studio-command-head{position:sticky;top:-24px;background:#14212c;padding:12px 0;z-index:1}
+.brick-studio .studio-update-list{list-style:none;padding:0;margin:12px 0 0}
+.brick-studio .studio-update-list li{border-top:1px solid #344b5a;padding:16px 0}
+.brick-studio .studio-update-list time{font-size:12px;color:#91bacd}
+.brick-studio .studio-update-list p{margin:6px 0 0;line-height:1.7;overflow-wrap:anywhere}
+.brick-studio .studio-history-trigger{white-space:normal;max-width:210px;font-size:13px}
