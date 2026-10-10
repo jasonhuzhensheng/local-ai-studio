@@ -1,5 +1,7 @@
 # Viggle v0.3 安装与模式
 
+[English](viggle-v03.en.md) | **简体中文**
+
 官方来源：https://huggingface.co/Viggle/Qwen-Image-2.1-viggle-turbo
 固定revision和权重大小/哈希见src/viggle_turbo_v03_model.json；安装脚本src/install_viggle_turbo_v03.py。独立models/viggle-qwen-turbo-v03目录，共用已安装底模、原Python环境，未升级依赖，不覆盖v0.1/v0.2.1。
 

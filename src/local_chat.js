@@ -26,7 +26,7 @@ function ensureSession(firstMessage){if(activeSession())return activeSession();c
 function persist(status){const session=activeSession();if(!session)return;session.messages=session.taskId?history.slice():history.slice(-48);session.status=status;session.updatedAt=Date.now();sessions.sort((a,b)=>b.updatedAt-a.updatedAt);saveSessions();renderList();$('queue-state').textContent=busy?'正在生成 1 项 · 等待 0 项':'当前无生成任务 · 等待 0 项';}
 function deleteTurn(index){
   if(busy)return;
-  if(!window.confirm("确定删除本次提问和回答吗？删除后无法恢复。"))return;
+  if(!window.confirm(window.StudioI18n.t("确定删除本次提问和回答吗？删除后无法恢复。")))return;
   const start=(!history[index]||history[index].role==='assistant')&&history[index-1]?.role==='user'?index-1:index;
   const count=history[start]?.role==='user'&&history[start+1]?.role==='assistant'?2:1;
   history.splice(start,count);

@@ -1,0 +1,11 @@
+/* Shared by the image, chat, video and account pages, including unauthenticated login. */
+.studio-language{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;font-size:12px;font-weight:500;color:#42564b;margin:0;white-space:nowrap}
+.studio-language select{width:auto;min-width:88px;font:inherit;color:inherit;background:#fff;border:1px solid #cbd5ca;border-radius:8px;padding:8px}
+header:has(.studio-language){height:auto;min-height:64px;flex-wrap:wrap}
+.header-actions:has(.studio-language){flex-wrap:wrap}
+html[lang=en] .entry-nav{flex-wrap:wrap}
+@media(max-width:850px){.studio-language{margin:8px 0}header:has(.studio-language){padding-top:12px;padding-bottom:12px}}
+html[lang=en] .composer .controls{flex-wrap:wrap;align-items:flex-start}
+html[lang=en] .composer .options{flex-wrap:wrap;flex:1 1 440px}
+html[lang=en] .composer .options select{max-width:100%;width:auto}
+html[lang=en] .composer .buttons{flex:0 0 auto;white-space:nowrap}

@@ -1,3 +1,5 @@
+语言：简体中文 | English: INSTALL-PROMPT.en.txt
+
 请在这台全新机器上部署本代码包中的“本地 AI 工作室”。这是迁移现有源码，不是重新写一个类似网站。
 1. 先读 README-先读我.txt 和代码，检测系统、架构、内存、可用磁盘、GPU和已安装工具。报告兼容性。Apple Silicon 为已验证平台；其他平台先明确适配工作，不冒充直接支持。
 2. 专属目录使用 ~/Library/Application Support/LocalImageStudio，app 放源码，runtime 放环境/引擎/任务，models 放权重；app/.local -> ../runtime，runtime/image-models -> ../models。不要放 iCloud Desktop/Documents，不复用旧用户名、IP、Tailnet身份。
@@ -12,3 +14,5 @@
 11. 保存本机部署说明、启动停止命令、路径/模型/依赖版本和验证结果。不读取其他私人文件。需要管理员密码/账号登录时由用户完成；其他已授权安装继续执行。完成前明确剩余阻碍，不宣称未执行检查通过。
 
 12. 本版本默认启用网站鉴权。启动后让用户在本机 /setup 页面自行设置首个管理员，再测试登录后业务接口；未登录 /api/models 返回401是预期。不要关闭鉴权或复制旧账号库。参考 docs/accounts.md。
+
+界面顶部可选择中文 / English；浏览器保存选择，不翻译用户输入或聊天正文。

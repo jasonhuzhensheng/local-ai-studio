@@ -39,6 +39,7 @@ export function createAuth({directory,assetRoot}) {
         res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; form-action 'self'");
         res.writeHead(200,{'Content-Type':'text/html; charset=utf-8'});res.end(fs.readFileSync(path.join(assetRoot,'studio_account.html')));return true;
       }
+      if(['/i18n.js','/i18n.css'].includes(route)&&req.method==='GET'){res.writeHead(200,{'Content-Type':route.endsWith('.js')?'text/javascript; charset=utf-8':'text/css; charset=utf-8'});res.end(fs.readFileSync(path.join(assetRoot,route.endsWith('.js')?'studio_i18n.js':'studio_i18n.css')));return true;}
       if(['/account.js','/account.css'].includes(route)&&req.method==='GET'){res.writeHead(200,{'Content-Type':route.endsWith('.js')?'text/javascript; charset=utf-8':'text/css; charset=utf-8'});res.end(fs.readFileSync(path.join(assetRoot,route.endsWith('.js')?'studio_account.js':'studio_account.css')));return true;}
       if(route==='/api/auth/status'&&req.method==='GET'){const c=current(req);json(res,{initialized:db.users.length>0,canSetup:!db.users.length&&loopback(req.socket.remoteAddress)&&['127.0.0.1','localhost','[::1]'].includes(url.hostname),user:c?publicUser(c.user):null});return true;}
       if(route.startsWith('/api/auth/')) {

@@ -1,47 +1,53 @@
-# macbook pro工作室
+# MacBook Pro Studio
 
-Apple Silicon Mac 本地图像、文字和实验视频工作室。
+**English** | [简体中文](README.zh-CN.md)
 
-## 界面预览
+A local image, chat and experimental video studio for Apple Silicon Macs.
 
-以下展示基于本仓库已发布的页面样式。所有提示词、任务编号、时间、插画和对话均为专门制作的虚构演示内容，不含真实账号、用户图片或聊天记录。示例插画为程序绘制，不代表模型实测输出或画质承诺。
+## Interface language
 
-### 图片工作室
+Choose **中文 / English** at the top of the image, chat, video or account page. The preference is stored in this browser and survives refreshes. Switching does not reload the page or rewrite prompts, chat messages or history titles. The first visit follows the browser language; switching still works for the current page if preference storage is unavailable.
 
-选择模型、填写提示词，查看任务与图片结果。
+## Interface previews
 
-![图片工作室界面：虚构任务与程序绘制的山水示例插画](docs/images/image-studio-demo.png)
+These previews use the released page styles. All prompts, task IDs, timestamps, illustrations and conversations are fictional demo content created for this README. They contain no real accounts, user images or chat records. The illustrations are programmatically drawn, not model benchmarks or quality claims.
 
-### 本地文字对话
+### Image studio
 
-在同一个工作室中进行文字交流，设置回答方式与长度。
+Choose a model, enter a prompt and browse tasks and image results.
 
-![文字对话界面：人工编写的插画构思演示对话](docs/images/chat-studio-demo.png)
+![Image studio with fictional tasks and programmatically drawn landscape illustrations](docs/images/image-studio-demo.en.png)
 
-## 全新机器部署
+### Local chat
 
-1. 克隆本仓库。
-2. 阅读 [部署说明](README-先读我.txt)。
-3. 将 [部署提示词](INSTALL-PROMPT.txt) 交给新机器上的编程助手，按本机硬件安装依赖和下载模型。
+Chat in the same studio and select a response mode and length.
 
-网页入口：`/edit` 图片、`/chat` 文字、`/video` 视频；默认网页端口 1235。
+![Local chat with a fictional, manually written illustration-planning conversation](docs/images/chat-studio-demo.en.png)
 
-本仓库是当前运行代码的迁移快照，不包含模型权重、虚拟环境、用户任务、聊天记录、参考图或账号配置。新机器完整部署尚未验收，不是双击即用应用。
+## Set up a new Mac
 
-## 文件
+1. Clone this repository.
+2. Read the [deployment guide](README-FIRST.en.txt) ([中文](README-先读我.txt)).
+3. Give the [installation prompt](INSTALL-PROMPT.en.txt) ([中文](INSTALL-PROMPT.txt)) to a coding assistant on the target Mac to install dependencies and download models appropriate for that hardware.
 
-- `src/`：前后端、模型清单、安装及验证工具。
-- `tests/`：测试；部分需要模型或运行服务。
-- `requirements/`：依赖锁。
-- `vendor/`：现用原生引擎源码，保留上游许可证。
-- `patches/`：固定版本信息与 Apple 适配。
+Pages: `/edit` for images, `/chat` for chat, `/video` for video. The default web port is `1235`.
 
-模型与第三方源码分别遵循上游许可证。H3/ClipProj Apple 适配属于实验功能；不要把小样通过视为所有分辨率和时长可用。
+This repository is a reviewed release and migration copy. It may lag behind local development or production. It excludes model weights, virtual environments, user tasks, chat records, reference images and account configuration. A complete installation on a fresh machine has not been validated. This is not a one-click application.
 
-## 登录与账号管理
+## Repository contents
 
-首次在运行服务的Mac打开 `http://127.0.0.1:1235/setup` 自行创建管理员，再从其他设备登录。管理员可新增、停用、删除账号和重置密码。详见 [账号说明](docs/accounts.md)。没有默认口令；账号文件在运行数据目录，不能上传。任务仍为共享工作室数据。
+- `src/`: frontend, backend, model manifests, installation and validation tools.
+- `tests/`: tests; some require installed models or running services.
+- `requirements/`: pinned dependencies.
+- `vendor/`: native engine source, with upstream licenses retained.
+- `patches/`: pinned versions and Apple adaptations.
+
+Models and third-party source retain their upstream licenses. H3/ClipProj Apple support is experimental. A successful short sample does not establish support for every resolution or duration.
+
+## Sign-in and accounts
+
+On the Mac running the service, open `http://127.0.0.1:1235/setup` to create the first administrator, then sign in from other devices. Administrators can create, disable and delete accounts and reset passwords. See [account documentation](docs/accounts.en.md) ([中文](docs/accounts.md)). There is no default password. Account files stay in the runtime data directory and must not be uploaded. Tasks remain shared studio data.
 
 ## Viggle v0.3
 
-独立六步和九步细节模式已接入，保留旧版默认。安装及验证见 [Viggle v0.3](docs/viggle-v03.md)。模型权重需在本机单独下载。
+Separate six-step and nine-step detail modes are available, with the previous default retained. See [installation and validation](docs/viggle-v03.en.md) ([中文](docs/viggle-v03.md)). Download model weights separately on the target Mac.
