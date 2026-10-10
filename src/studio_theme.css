@@ -160,3 +160,5 @@ body.brick-studio{margin:0;min-height:100vh;color:#e7eef4;background:radial-grad
 .brick-studio.studio-chat .composer textarea{min-height:180px}
 @media(min-width:851px) and (max-width:1100px){.brick-studio.studio-chat .layout{grid-template-columns:330px minmax(0,1fr)}}
 @media(max-width:850px){.brick-studio.studio-chat .layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"composer" "messages" "history"}.brick-studio.studio-chat .composer textarea{min-height:100px}}
+
+.brick-studio a.myai-home{display:inline-flex;padding:0;border:0;border-radius:9px;background:transparent;line-height:0;text-decoration:none}.brick-studio a.myai-home:focus-visible{outline:3px solid #19e8f4;outline-offset:5px}
