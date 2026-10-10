@@ -17,7 +17,7 @@ Translations are bundled locally and do not call a cloud translation service dur
 
 ## Brick Cyber Studio
 
-The image, chat, experimental video and account pages share a dark modular design with brick studs, mechanical button feedback, cyan selection states and yellow primary actions. On desktop, image/video results sit beside the parameter panel; smaller screens follow the form-to-results order.
+The image, chat, experimental video and account pages share a dark modular design with brick studs, mechanical button feedback, cyan selection states and yellow primary actions. On desktop, image/video/chat inputs and actions are on the left, with generated content on the right; smaller screens show inputs before results.
 
 Use **⌘ K / Ctrl K** for workspace navigation. On image/video forms, **⌘ Enter / Ctrl Enter** uses the regular validated submission flow; disabled actions stay disabled. Video capability notes remain available in an expandable section. The redesign retains all 33 languages, existing model limits and account checks.
 

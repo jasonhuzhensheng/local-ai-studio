@@ -30,7 +30,7 @@ try{
  });
  for(const url of ['/edit','/chat','/video','/login','/setup','/account']){
   await page.setViewportSize({width:1360,height:1040});await page.goto('https://studio-test.invalid'+url);
-  await page.locator('.studio-command-trigger').waitFor();assert.equal(await page.title(),'MYAI');assert.equal(await page.locator('.myai-logo').evaluate(e=>e.complete&&e.naturalWidth>0),true);await page.locator('[data-language-select]').selectOption('en');
+  await page.locator('.studio-command-trigger').waitFor();assert.equal(await page.title(),'MYAI');if(['/edit','/video','/chat'].includes(url)){const input=await page.locator(url==='/chat'?'.composer':'main.layout>.panel').boundingBox();const output=await page.locator(url==='/chat'?'#messages':'main.layout>section:not(.panel)').boundingBox();assert.ok(input.x+input.width<=output.x,'Inputs must be left of results');}assert.equal(await page.locator('.myai-logo').evaluate(e=>e.complete&&e.naturalWidth>0),true);await page.locator('[data-language-select]').selectOption('en');
   await page.waitForFunction(()=>StudioI18n.language==='en');
   assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(11, 16, 22)');
   const input=page.locator(url==='/chat'?'#input':url==='/login'||url==='/setup'?'#login-form input[name=username]':url==='/account'?'#password-form input[name=oldPassword]':'#prompt');
