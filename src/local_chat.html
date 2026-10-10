@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>macbook pro工作室 · 文字对话</title>
+  <title>MYAI</title>
   <style>
     :root{font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202b25;background:#f5f6f3}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;flex-direction:column}
     header{height:64px;background:#fff;border-bottom:1px solid #e0e5df;padding:0 max(20px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px}header strong{font-size:16px}a,button{color:#275c43}header a{font-size:14px}header .entry-nav{display:flex;gap:4px;padding:4px;border:1px solid #dce3da;background:#fff;border-radius:12px}header .entry-link{color:#42564b;text-decoration:none;font-size:13px;padding:8px 12px;border-radius:8px;white-space:nowrap}header .entry-link:hover{background:#eff3ec}header .entry-link.active{background:#275c43;color:#fff}
@@ -11,9 +11,9 @@
     .composer{position:sticky;bottom:0;padding:12px 0 4px;background:#f5f6f3}.composer-box{border:1px solid #cfd8ce;border-radius:16px;background:#fff;padding:10px;box-shadow:0 4px 20px #24382d0b}.composer textarea{border:0;outline:0;resize:vertical;min-height:56px;max-height:200px;width:100%;font:inherit;line-height:1.5;padding:8px;color:inherit}.controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 2px 0}.hint,.status{font-size:12px;color:#6a786f}.options{display:flex;align-items:center;gap:8px;min-width:0}.options label{font-size:12px;color:#6a786f;white-space:nowrap}.options select{font:inherit;font-size:12px;color:#34483b;border:1px solid #d2dbd1;background:#fff;border-radius:8px;padding:7px 8px;max-width:180px}.buttons{display:flex;gap:8px}button{font:inherit;cursor:pointer;border:1px solid #d2dbd1;background:white;border-radius:9px;padding:8px 12px}button:hover{background:#f0f4ef}button[hidden]{display:none}.send{background:#275c43;color:#fff;border:0}.send:hover{background:#204d38}.send:disabled,.stop:disabled{opacity:.5;cursor:wait}.stop{color:#a53737;border-color:#e6caca}.stop:hover{background:#fff2f2}.error{color:#a53737}.stopped{color:#68776d}.empty{font-size:14px;color:#68776d;text-align:center;padding:12px}.foot{font-size:11px;color:#869188;text-align:center;padding:8px 0}
     @media(max-width:720px){header{height:auto;min-height:64px;flex-wrap:wrap;padding:10px 16px}header strong{font-size:14px}main{padding:18px 12px 10px}.layout{grid-template-columns:1fr;gap:12px}.history-panel{position:static;padding:11px}.history-list{max-height:190px}.messages{min-height:160px}.controls{align-items:flex-start;flex-wrap:wrap}.options{flex-wrap:wrap}.options select{max-width:150px}.bubble{padding:11px 13px}}
   </style>
-<script src="/auth-guard.js"></script><link rel="stylesheet" href="/i18n.css"><script src="/i18n.js" defer></script><link rel="stylesheet" href="/studio-theme.css"><script src="/studio-shell.js" defer></script></head>
+<script src="/auth-guard.js"></script><link rel="stylesheet" href="/i18n.css"><script src="/i18n.js" defer></script><link rel="stylesheet" href="/studio-theme.css"><script src="/studio-shell.js" defer></script><link rel="icon" href="/myai-icon.svg" type="image/svg+xml"></head>
 <body class="brick-studio studio-chat">
-  <header><strong>macbook pro工作室</strong><nav class="entry-nav" aria-label="本地工具入口"><a class="entry-link" href="/edit">图片生成</a><a class="entry-link active" aria-current="page" href="/chat">文字对话</a><a class="entry-link" href="/video">视频生成</a><a class="entry-link" href="/account">账号 / 退出</a></nav></header>
+  <header><strong><img class="myai-logo" src="/myai-logo.svg" alt="MYAI" width="160" height="55" translate="no"></strong><nav class="entry-nav" aria-label="本地工具入口"><a class="entry-link" href="/edit">图片生成</a><a class="entry-link active" aria-current="page" href="/chat">文字对话</a><a class="entry-link" href="/video">视频生成</a><a class="entry-link" href="/account">账号 / 退出</a></nav></header>
   <main>
     <div class="intro"><h1>有什么想聊的？</h1><p>由 LM Studio 在本机运行。对话直接发送到本机模型，不经过云端服务。</p></div>
     <div class="layout">

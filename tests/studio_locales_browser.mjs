@@ -3,7 +3,7 @@ const {chromium}=await import(process.env.STUDIO_PLAYWRIGHT_MODULE||'playwright'
 const b=await chromium.launch({headless:true,...(process.env.STUDIO_TEST_BROWSER?{executablePath:process.env.STUDIO_TEST_BROWSER}:{})});
 try{const c=await b.newContext({viewport:{width:1360,height:960},locale:'en-US'});const p=await c.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
 await c.route('**/*',async r=>{const u=new URL(r.request().url());if(u.hostname!=='studio-test.invalid')return r.abort();
- const map={'/login':'studio_account.html','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css','/studio-theme.css':'studio_theme.css','/studio-shell.js':'studio_shell.js'};let f=map[u.pathname];if(/^\/locales\/[A-Za-z-]+\.json$/.test(u.pathname))f=u.pathname.slice(1);
+ const map={'/login':'studio_account.html','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css','/myai-logo.svg':'myai_logo.svg','/myai-icon.svg':'myai_icon.svg','/studio-theme.css':'studio_theme.css','/studio-shell.js':'studio_shell.js'};let f=map[u.pathname];if(/^\/locales\/[A-Za-z-]+\.json$/.test(u.pathname))f=u.pathname.slice(1);
  if(f)return r.fulfill({body:fs.readFileSync(path.join(root,f)),contentType:f.endsWith('.html')?'text/html':f.endsWith('.css')?'text/css':f.endsWith('.json')?'application/json':'text/javascript'});
  if(u.pathname==='/api/auth/status')return r.fulfill({json:{initialized:true,user:null,canSetup:false}});return r.fulfill({status:404,body:''});});
 await p.goto('https://studio-test.invalid/login');await p.locator('[data-language-select]').waitFor();const locales=await p.evaluate(()=>StudioI18n.locales);

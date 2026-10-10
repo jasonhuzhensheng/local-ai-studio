@@ -1,4 +1,9 @@
-# MacBook Pro Studio
+# MYAI
+
+![MYAI](src/myai_logo.svg)
+
+MYAI brings different AI models together in one local creative studio.
+
 
 **English** | [简体中文](README.zh-CN.md) | [🌐 All 33 languages](docs/i18n/README.md)
 
@@ -59,3 +64,9 @@ On the Mac running the service, open `http://127.0.0.1:1235/setup` to create the
 ## Viggle v0.3
 
 Separate six-step and nine-step detail modes are available, with the previous default retained. See [installation and validation](docs/viggle-v03.en.md) ([中文](docs/viggle-v03.md)). Download model weights separately on the target Mac.
+
+## Brand design
+
+![MYAI brand concepts](docs/images/myai-brand-scenarios.png)
+
+Brand application concepts; the interface screenshots above show the implemented product. The example domain is a placeholder.

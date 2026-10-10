@@ -6,12 +6,12 @@ import {fileURLToPath} from 'node:url';
 const {chromium}=await import(process.env.STUDIO_PLAYWRIGHT_MODULE||'playwright');
 const root=path.resolve(process.env.STUDIO_TEST_SOURCE||fileURLToPath(new URL('../src',import.meta.url)));
 const browser=await chromium.launch({headless:true,...(process.env.STUDIO_TEST_BROWSER?{executablePath:process.env.STUDIO_TEST_BROWSER}:{})});
-const pages={'/edit':'image_editor.html','/chat':'local_chat.html','/video':'video_editor.html','/login':'studio_account.html','/setup':'studio_account.html','/account':'studio_account.html','/studio.js':'image_editor.js','/chat.js':'local_chat.js','/video.js':'video_editor.js','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css','/studio-theme.css':'studio_theme.css','/studio-shell.js':'studio_shell.js','/auth-guard.js':'studio_auth_guard.js','/chat_stream.mjs':'local_chat_stream.mjs'};
+const pages={'/edit':'image_editor.html','/chat':'local_chat.html','/video':'video_editor.html','/login':'studio_account.html','/setup':'studio_account.html','/account':'studio_account.html','/studio.js':'image_editor.js','/chat.js':'local_chat.js','/video.js':'video_editor.js','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css','/myai-logo.svg':'myai_logo.svg','/myai-icon.svg':'myai_icon.svg','/studio-theme.css':'studio_theme.css','/studio-shell.js':'studio_shell.js','/auth-guard.js':'studio_auth_guard.js','/chat_stream.mjs':'local_chat_stream.mjs'};
 try{
 const context=await browser.newContext({viewport:{width:1440,height:1000},locale:'zh-CN'});const errors=[];const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
 await context.route('**/*',async route=>{const u=new URL(route.request().url());if(u.hostname!=='studio-test.invalid')return route.abort();let file=pages[u.pathname];if(!file&&/^\/[a-z_]+\.mjs$/.test(u.pathname))file=u.pathname.slice(1);
 if(!file&&/^\/locales\/[A-Za-z-]+\.json$/.test(u.pathname))file=u.pathname.slice(1);
-if(file){const p=path.join(root,file);if(fs.existsSync(p))return route.fulfill({body:fs.readFileSync(p),contentType:file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':'text/javascript'});}
+if(file){const p=path.join(root,file);if(fs.existsSync(p))return route.fulfill({body:fs.readFileSync(p),contentType:file.endsWith('.svg')?'image/svg+xml':file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':'text/javascript'});}
 if(u.pathname==='/api/auth/status')return route.fulfill({json:{initialized:true,canSetup:false,user:page.url().includes('/login')?null:{username:'demo_user',role:'user'}}});
 if(u.pathname==='/api/auth/login')return route.fulfill({status:401,json:{error:'用户名或密码错误，或账号已停用'}});
 if(u.pathname==='/api/models')return route.fulfill({json:{viggleV03Ready:true,viggleV021Ready:true}});

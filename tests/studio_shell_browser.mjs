@@ -8,7 +8,7 @@ const root=path.resolve(process.env.STUDIO_TEST_SOURCE||fileURLToPath(new URL('.
 const screenshots=process.env.STUDIO_TEST_SCREENSHOTS;
 if(screenshots)fs.mkdirSync(screenshots,{recursive:true});
 const browser=await chromium.launch({headless:true,...(process.env.STUDIO_TEST_BROWSER?{executablePath:process.env.STUDIO_TEST_BROWSER}:{})});
-const routes={'/edit':'image_editor.html','/chat':'local_chat.html','/video':'video_editor.html','/login':'studio_account.html','/setup':'studio_account.html','/account':'studio_account.html','/studio.js':'image_editor.js','/chat.js':'local_chat.js','/video.js':'video_editor.js','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css','/auth-guard.js':'studio_auth_guard.js','/studio-theme.css':'studio_theme.css','/studio-shell.js':'studio_shell.js'};
+const routes={'/edit':'image_editor.html','/chat':'local_chat.html','/video':'video_editor.html','/login':'studio_account.html','/setup':'studio_account.html','/account':'studio_account.html','/studio.js':'image_editor.js','/chat.js':'local_chat.js','/video.js':'video_editor.js','/account.js':'studio_account.js','/account.css':'studio_account.css','/i18n.js':'studio_i18n.js','/i18n.css':'studio_i18n.css','/auth-guard.js':'studio_auth_guard.js','/myai-logo.svg':'myai_logo.svg','/myai-icon.svg':'myai_icon.svg','/studio-theme.css':'studio_theme.css','/studio-shell.js':'studio_shell.js'};
 const artwork='<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><rect width="640" height="640" fill="#10202f"/><rect x="210" y="170" width="220" height="150" rx="14" fill="#ffda62"/><rect x="232" y="219" width="176" height="38" fill="#163846"/><rect x="249" y="231" width="142" height="10" fill="#66f3df"/><rect x="200" y="350" width="240" height="160" rx="8" fill="#354f65"/><text x="28" y="48" fill="#bdd4df" font-size="18" font-family="sans-serif">FICTIONAL DEMO / NOT MODEL OUTPUT</text></svg>';
 try{
  const context=await browser.newContext({viewport:{width:1360,height:1040},locale:'zh-CN'});
@@ -18,7 +18,7 @@ try{
   const request=route.request(),u=new URL(request.url());if(u.hostname!=='studio-test.invalid')return route.abort();
   let file=routes[u.pathname];if(!file&&/^\/[a-z_]+\.mjs$/.test(u.pathname))file=u.pathname.slice(1);
   if(!file&&/^\/locales\/[A-Za-z-]+\.json$/.test(u.pathname))file=u.pathname.slice(1);
-  if(file&&fs.existsSync(path.join(root,file)))return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':file.endsWith('.json')?'application/json':'text/javascript'});
+  if(file&&fs.existsSync(path.join(root,file)))return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.svg')?'image/svg+xml':file.endsWith('.html')?'text/html':file.endsWith('.css')?'text/css':file.endsWith('.json')?'application/json':'text/javascript'});
   if(request.method()!=='GET'){writes.push(u.pathname);return route.fulfill({status:400,json:{error:'Synthetic test does not submit real work'}});}
   if(u.pathname==='/api/auth/status'){const current=new URL(page.url()).pathname;return route.fulfill({json:{initialized:current!=='/setup',canSetup:current==='/setup',user:['/login','/setup'].includes(current)?null:{username:'demo_user',role:current==='/account'?'admin':'user'}}});}
   if(u.pathname==='/api/auth/users')return route.fulfill({json:{users:[{id:'demo-admin',username:'demo_user',role:'admin',disabled:false},{id:'demo-reader',username:'demo_reader',role:'user',disabled:false}]}});
@@ -30,7 +30,7 @@ try{
  });
  for(const url of ['/edit','/chat','/video','/login','/setup','/account']){
   await page.setViewportSize({width:1360,height:1040});await page.goto('https://studio-test.invalid'+url);
-  await page.locator('.studio-command-trigger').waitFor();await page.locator('[data-language-select]').selectOption('en');
+  await page.locator('.studio-command-trigger').waitFor();assert.equal(await page.title(),'MYAI');assert.equal(await page.locator('.myai-logo').evaluate(e=>e.complete&&e.naturalWidth>0),true);await page.locator('[data-language-select]').selectOption('en');
   await page.waitForFunction(()=>StudioI18n.language==='en');
   assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(11, 16, 22)');
   const input=page.locator(url==='/chat'?'#input':url==='/login'||url==='/setup'?'#login-form input[name=username]':url==='/account'?'#password-form input[name=oldPassword]':'#prompt');

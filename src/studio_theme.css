@@ -143,3 +143,9 @@ body.brick-studio{margin:0;min-height:100vh;color:#e7eef4;background:radial-grad
 @media(max-width:480px){.brick-studio .grid2{grid-template-columns:minmax(0,1fr)}.brick-studio :where(input,select,textarea){font-size:16px}.brick-studio .entry-nav{width:100%}.brick-studio .entry-link{flex:1 1 40%;text-align:center}.brick-studio .studio-language select{max-width:200px}.brick-studio .panel,.brick-studio .card{padding:16px}.brick-studio .toolbar>div{width:100%}.brick-studio .toolbar select{min-width:0;max-width:100%}.brick-studio .bubble{padding:12px;max-width:calc(100% - 38px)}.brick-studio .message{gap:8px}.brick-studio .resolution-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brick-studio .resolution-grid button{font-size:12px}.brick-studio.studio-account header{display:flex}.brick-studio.studio-account header small,.brick-studio.studio-account header h1{width:100%}.brick-studio.studio-account header nav{width:100%}.brick-studio .preview-toolbar{gap:7px}.brick-studio .preview-toolbar button{font-size:12px}.brick-studio .task-identity input{font-size:11px}}
 @media(pointer:coarse){.brick-studio :where(button,.button,summary,.entry-link,header nav a){min-height:44px}.brick-studio .ref button{min-height:40px}}
 @media(prefers-reduced-motion:reduce){.brick-studio *,.brick-studio *:before,.brick-studio *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Approved MYAI brand: warm yellow, white modular letters, violet/cyan edge. */
+.brick-studio .myai-logo{display:block;width:160px;height:auto;max-width:100%;border-radius:9px;object-fit:contain}
+.brick-studio header h1:has(.myai-logo){margin:5px 0}
+.brick-studio header>small:has(.myai-logo){display:block}
+.brick-studio #submit,.brick-studio button.primary{background:#ffd500;color:#161021}

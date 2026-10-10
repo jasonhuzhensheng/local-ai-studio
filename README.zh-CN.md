@@ -1,4 +1,9 @@
-# macbook pro工作室
+# MYAI
+
+![MYAI](src/myai_logo.svg)
+
+MYAI 将不同 AI 模型拼在一起，组成你的本地创作工作室。
+
 
 [English](README.md) | **简体中文** | [🌐 全部 33 种语言](docs/i18n/README.md)
 
@@ -59,3 +64,9 @@ Apple Silicon Mac 本地图像、文字和实验视频工作室。
 ## Viggle v0.3
 
 独立六步和九步细节模式已接入，保留旧版默认。安装及验证见 [Viggle v0.3](docs/viggle-v03.md)。模型权重需在本机单独下载。
+
+## 品牌设计
+
+![MYAI brand concepts](docs/images/myai-brand-scenarios.png)
+
+品牌应用概念图；上方界面截图为已实现的产品。示意域名仅为占位符。
