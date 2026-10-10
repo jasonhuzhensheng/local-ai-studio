@@ -10,6 +10,12 @@ Use the language menu in the upper-right corner of the image, chat, video or acc
 
 Translations are bundled locally and do not call a cloud translation service during use. The additional catalogs and manuals are machine translated; see the [language index](docs/i18n/README.md) for all editions and review status. Operating-system file dialogs and unstructured upstream errors may retain their original language.
 
+## Brick Cyber Studio
+
+The image, chat, experimental video and account pages share a dark modular design with brick studs, mechanical button feedback, cyan selection states and yellow primary actions. On desktop, image/video results sit beside the parameter panel; smaller screens follow the form-to-results order.
+
+Use **⌘ K / Ctrl K** for workspace navigation. On image/video forms, **⌘ Enter / Ctrl Enter** uses the regular validated submission flow; disabled actions stay disabled. Video capability notes remain available in an expandable section. The redesign retains all 33 languages, existing model limits and account checks.
+
 ## Interface previews
 
 These previews use the released page styles. All prompts, task IDs, timestamps, illustrations and conversations are fictional demo content created for this README. They contain no real accounts, user images or chat records. The illustrations are programmatically drawn, not model benchmarks or quality claims.
