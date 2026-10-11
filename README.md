@@ -21,13 +21,21 @@ MYAI is a source and migration package for people comfortable with local model s
 
 A shared dark interface supports desktop and mobile layouts, keyboard navigation, a supported-model directory, and project/artwork sharing. Image share exports include a QR code and project link. See the [user guide](docs/usage.en.md) for the release's behavior.
 
-## See the workspace
+## Real local model samples
 
-These interface illustrations use fictional tasks and manually prepared demo content. They are **not model benchmarks** and contain no real user records.
+The product images below now use actual outputs from the model documentation: Viggle four-step editing, Qwen multi-reference editing and WAI illustration. Generated on **Apple M2 Max / 96 GB**. These are resized samples, not interface mockups or matched speed benchmarks.
 
-![Image workspace](docs/images/image-studio-demo.en.png)
+![Actual MYAI model outputs with model, elapsed time and dimensions](docs/images/model-samples/overview.jpg)
 
-![Local chat workspace](docs/images/chat-studio-demo.en.png)
+![Actual reference-to-result example with Viggle four-step editing](docs/images/model-samples/reference-comparison.jpg)
+
+[View prompts, input images, parameters and limitations](docs/model-samples.en.md) · [中文样张说明](docs/model-samples.zh-CN.md)
+
+### Chat interface
+
+This separate interface screenshot still uses fictional, manually prepared chat content; it is not a real model response benchmark.
+
+![Chat interface demonstration](docs/images/chat-studio-demo.en.png)
 
 ## Start here
 
@@ -62,7 +70,7 @@ English is the default GitHub documentation entry; Simplified Chinese is maintai
 
 - Inference uses locally configured engines. Model downloads, GitHub links, external sharing and optional private-network services require their own network connections; “local” does not mean every operation is offline.
 - This is a **shared studio**, not an isolated multi-tenant service. Accounts do not create separate model queues or private media libraries. Use the [account guide](docs/accounts.en.md) before inviting others.
-- Do not commit weights, environments, user prompts/images/chats, account databases, tokens or private machine configuration. This repository excludes them.
+- Do not commit weights, environments, user prompts/images/chats, account databases, tokens or private machine configuration. This repository excludes private runtime data; the explicitly authorized documentation samples above are a separate curated exception.
 - The public release can lag behind a development machine. Local sample galleries, additional models and newer controls are not automatically included in this checkout. Read the [model scope](docs/models.en.md) rather than assuming parity.
 - Models and vendored components retain their upstream licenses. A model being downloadable or listed here does not grant unrestricted commercial rights. Check the selected component's license before distributing it or its outputs.
 

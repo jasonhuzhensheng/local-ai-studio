@@ -1,0 +1,95 @@
+{
+  "machine": {
+    "chip": "Apple M2 Max",
+    "cpu_cores": 12,
+    "unified_memory_gb": 96,
+    "os": "macOS 27.0.1"
+  },
+  "timing": "Task start to finish; includes task-local loading and postprocessing; excludes queue and failed attempts. Single runs, not matched benchmarks.",
+  "previews": "Resized JPEGs of authorized fictional reference images and actual generated outputs.",
+  "samples": [
+    {
+      "model_id": "viggle-qwen-image-2.1-4step",
+      "source_output_sha256": "dd4fd35ca7de60f61b7ceb64d684152ddb166588d4f704dc1cffcaa2b04aa01f",
+      "output_preview": "viggle-qwen-image-2.1-4step.jpg",
+      "input_previews": [
+        "reference-2.jpg"
+      ],
+      "seconds": 66.998,
+      "output_dimensions": [
+        512,
+        768
+      ],
+      "parameters": {
+        "model_id": "viggle-qwen-image-2.1-4step",
+        "prompt": "Create a neutral fashion catalog portrait of the same fictional adult woman in the reference image. She is standing upright, wearing an opaque green long-sleeved buttoned shirt and black trousers. Waist-up composition, simple beige room, warm natural window light, relaxed neutral expression. Preserve her face and long dark hair. Fully clothed, no lingerie, no text, no watermark.",
+        "width": 512,
+        "height": 768,
+        "steps": 4,
+        "seed": 42,
+        "cfg_scale": 1,
+        "negative_prompt": "",
+        "cache_mode": "none",
+        "detail_mode": "standard",
+        "large_mode": "balanced",
+        "qwen_optimization": "baseline",
+        "sampler": "FlowMatchEulerDiscreteScheduler / fixed model schedule"
+      }
+    },
+    {
+      "model_id": "qwen-image-2.1",
+      "source_output_sha256": "7dfb7be019b5f1efa2fcd767811711340bc0ef0c0fc08a0d8e3dd724d514a8cc",
+      "output_preview": "qwen-image-2.1.jpg",
+      "input_previews": [
+        "reference-1.jpg",
+        "reference-2.jpg"
+      ],
+      "seconds": 1149.14,
+      "output_dimensions": [
+        512,
+        768
+      ],
+      "parameters": {
+        "model_id": "qwen-image-2.1",
+        "prompt": "使用图二的人物外观，参考图一的窗边构图和自然侧光，生成绿色长袖衬衫、黑色长裤的普通着装人像。保持自然比例与一致光照，背景简洁。不添加文字、水印或无关物体。",
+        "seed": 42,
+        "width": 512,
+        "height": 768,
+        "steps": 20,
+        "cfg_scale": 6,
+        "negative_prompt": "",
+        "cache_mode": "none",
+        "detail_mode": "standard",
+        "large_mode": "balanced",
+        "qwen_optimization": "baseline",
+        "sampler": "euler"
+      }
+    },
+    {
+      "model_id": "wai-illustrious-v17",
+      "source_output_sha256": "b148ae31b09e833ee4e178dbdf6fd3a28016801151b443e9590366f5144be5b1",
+      "output_preview": "wai-illustrious-v17.jpg",
+      "input_previews": [],
+      "seconds": 78.187,
+      "output_dimensions": [
+        768,
+        1024
+      ],
+      "parameters": {
+        "model_id": "wai-illustrious-v17",
+        "prompt": "masterpiece, best quality, anime illustration, adult woman, green long-sleeved buttoned shirt, black trousers, standing by a window, waist-up, warm natural side lighting, beige room, detailed hair, fully clothed",
+        "seed": 42,
+        "width": 768,
+        "height": 1024,
+        "steps": 20,
+        "cfg_scale": 6,
+        "negative_prompt": "low quality, blurry, bad anatomy, text, watermark, lingerie, nudity",
+        "cache_mode": "none",
+        "detail_mode": "standard",
+        "large_mode": "balanced",
+        "qwen_optimization": "baseline",
+        "sampler": "euler_a / discrete"
+      }
+    }
+  ]
+}

@@ -12,3 +12,5 @@ Start with installation, then the user guide. English and Simplified Chinese are
 - [Viggle v0.3](viggle-v03.en.md)
 - [Other languages](i18n/README.md)
 - [Project home](../README.md)
+
+- [Real model samples and prompts](model-samples.en.md)

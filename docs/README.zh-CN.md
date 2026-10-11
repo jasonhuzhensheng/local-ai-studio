@@ -12,3 +12,5 @@
 - [Viggle v0.3](viggle-v03.md)
 - [其他语言](i18n/README.md)
 - [项目首页](../README.zh-CN.md)
+
+- [真实模型样张与提示词](model-samples.zh-CN.md)
