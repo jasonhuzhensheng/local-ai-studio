@@ -1,4 +1,5 @@
 Deploy the Local AI Studio source package on this fresh machine. Migrate the existing source; do not rebuild a similar website from scratch.
+Read docs/getting-started.en.md and docs/models.en.md before choosing modules.
 Language: English | 中文: INSTALL-PROMPT.txt
 
 1. Read README-FIRST.en.txt and the source. Inspect OS, architecture, memory, free disk, GPU and installed tools. Report compatibility. Apple Silicon is the validated platform; identify adaptation work for other platforms instead of claiming direct support.

@@ -1,4 +1,5 @@
 Local AI Studio: migration source package for a fresh Apple Silicon Mac
+Documentation: docs/README.md | Chinese: docs/README.zh-CN.md
 Language: English | 中文: README-先读我.txt
 
 This reviewed release includes frontend/backend source, tests, model download manifests, pinned dependencies, native engine source and experimental Apple video patches. It may lag behind local development or production.

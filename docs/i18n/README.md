@@ -1,5 +1,9 @@
 # Documentation languages / 说明文档语言
 
+**Maintained documentation:** [English](../README.md) · [简体中文](../README.zh-CN.md). These editions include the latest installation, usage, model and troubleshooting guides. Other editions below may lag.
+
+**持续维护文档：** [English](../README.md) · [简体中文](../README.zh-CN.md)，包含最新安装、使用、模型与故障排查说明；下方其他语言译文可能有滞后。
+
 Choose a language below. The application offers the same 33 languages in its upper-right menu.
 在下表选择说明文档语言；软件右上角菜单提供相同的 33 种语言。
 

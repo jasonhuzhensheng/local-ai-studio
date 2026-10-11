@@ -1,4 +1,5 @@
 语言：简体中文 | English: README-FIRST.en.txt
+文档目录：docs/README.zh-CN.md | English: docs/README.md
 
 本地 AI 工作室：全新 Apple Silicon Mac 迁移代码包
 

@@ -1,72 +1,73 @@
-# MYAI
+# MYAI — Local AI Studio
 
 ![MYAI](src/myai_logo.svg)
 
-MYAI brings different AI models together in one local creative studio.
+**English** · [简体中文](README.zh-CN.md) · [Documentation](docs/README.md) · [Other languages](docs/i18n/README.md)
 
+Create images, edit reference photos and chat with local models from one browser workspace on an Apple Silicon Mac. Explore video generation through a separate experimental backend.
 
-**English** | [简体中文](README.zh-CN.md) | [🌐 All 33 languages](docs/i18n/README.md)
+**Local inference · Image creation and editing · LM Studio chat · Private-device access**
 
-A local image, chat and experimental video studio for Apple Silicon Macs.
+MYAI is a source and migration package for people comfortable with local model setup. Model weights and Python environments are installed separately. A complete fresh-Mac installation has not yet been validated; this is not a one-click installer.
 
-## Interface language
+## What you can do
 
-Use the language menu in the upper-right corner of the image, chat, video or account page. It offers **33 languages**, including English, Spanish, Japanese, Korean, Simplified/Traditional Chinese, and Brazilian/European Portuguese. The browser remembers your choice; the first visit follows your browser language. Switching preserves prompts, chat messages, history titles and current form input.
+| Workspace | Use it for | Requirements and limits |
+| --- | --- | --- |
+| Images `/edit` | Text-to-image, reference-image editing, illustration and optional upscaling | Install the matching model and runtime; options depend on model readiness. |
+| Chat `/chat` | Local conversations, response settings and background replies | LM Studio with the configured model alias and local API. |
+| Video `/video` | Short experimental video generation | Separate H3/ComfyUI/ClipProj setup, supported settings and available memory. |
+| Accounts `/account` | Sign-in, password changes and administrator controls | No default password. Signed-in users share studio tasks and media. |
 
-Translations are bundled locally and do not call a cloud translation service during use. The additional catalogs and manuals are machine translated; see the [language index](docs/i18n/README.md) for all editions and review status. Operating-system file dialogs and unstructured upstream errors may retain their original language.
+A shared dark interface supports desktop and mobile layouts, keyboard navigation, a supported-model directory, and project/artwork sharing. Image share exports include a QR code and project link. See the [user guide](docs/usage.en.md) for the release's behavior.
 
-## Brick Cyber Studio
+## See the workspace
 
-The image, chat, experimental video and account pages share a dark modular design with brick studs, mechanical button feedback, cyan selection states and yellow primary actions. On desktop, image/video/chat inputs and actions are on the left, with generated content on the right; smaller screens show inputs before results.
+These interface illustrations use fictional tasks and manually prepared demo content. They are **not model benchmarks** and contain no real user records.
 
-Use **⌘ K / Ctrl K** for workspace navigation. On image/video forms, **⌘ Enter / Ctrl Enter** uses the regular validated submission flow; disabled actions stay disabled. Video capability notes remain available in an expandable section. The redesign retains all 33 languages, existing model limits and account checks.
+![Image workspace](docs/images/image-studio-demo.en.png)
 
-## Interface previews
+![Local chat workspace](docs/images/chat-studio-demo.en.png)
 
-These previews use the released page styles. All prompts, task IDs, timestamps, illustrations and conversations are fictional demo content created for this README. They contain no real accounts, user images or chat records. The illustrations are programmatically drawn, not model benchmarks or quality claims.
+## Start here
 
-### Image studio
+1. Read [Getting started](docs/getting-started.en.md) and check the hardware and installation scope.
+2. Clone the repository:
 
-Choose a model, enter a prompt and browse tasks and image results.
+   ```sh
+   git clone https://github.com/jasonhuzhensheng/local-ai-studio.git
+   cd local-ai-studio
+   ```
 
-![Image studio with fictional tasks and programmatically drawn landscape illustrations](docs/images/image-studio-demo.en.png)
+3. Follow the [migration guide](README-FIRST.en.txt). The [installation prompt](INSTALL-PROMPT.en.txt) provides a structured checklist for a coding assistant on your target Mac.
+4. Install one suitable model/runtime first, create the local administrator, then verify real output before adding more modules.
 
-### Local chat
+The reference machine is an **Apple M2 Max with 96 GB unified memory**. This is a reference configuration, not a minimum requirement or a promise that every workflow fits smaller machines. Review disk, memory and pinned dependencies before downloads.
 
-Chat in the same studio and select a response mode and length.
+## Documentation — English / 中文
 
-![Local chat with a fictional, manually written illustration-planning conversation](docs/images/chat-studio-demo.en.png)
+| Topic | English | 简体中文 |
+| --- | --- | --- |
+| Documentation home | [Index](docs/README.md) | [目录](docs/README.zh-CN.md) |
+| Installation and first run | [Getting started](docs/getting-started.en.md) | [安装与首次运行](docs/getting-started.zh-CN.md) |
+| Everyday workflows and sharing | [User guide](docs/usage.en.md) | [使用指南](docs/usage.zh-CN.md) |
+| Model families and boundaries | [Models](docs/models.en.md) | [模型说明](docs/models.zh-CN.md) |
+| Sign-in and shared access | [Accounts](docs/accounts.en.md) | [账号](docs/accounts.md) |
+| Viggle six/nine-step setup | [Viggle v0.3](docs/viggle-v03.en.md) | [Viggle v0.3](docs/viggle-v03.md) |
+| Common issues | [Troubleshooting](docs/troubleshooting.en.md) | [故障排查](docs/troubleshooting.zh-CN.md) |
 
-## Set up a new Mac
+English is the default GitHub documentation entry; Simplified Chinese is maintained alongside it. The app retains its **33-language selector**, follows the browser language on first visit and remembers your selection. User prompts and chat content are not translated. Other-language manuals are machine translations and may lag behind the maintained English/Chinese editions.
 
-1. Clone this repository.
-2. Read the [deployment guide](README-FIRST.en.txt) ([中文](README-先读我.txt)).
-3. Give the [installation prompt](INSTALL-PROMPT.en.txt) ([中文](INSTALL-PROMPT.txt)) to a coding assistant on the target Mac to install dependencies and download models appropriate for that hardware.
+## Privacy, status and licensing
 
-Pages: `/edit` for images, `/chat` for chat, `/video` for video. The default web port is `1235`.
+- Inference uses locally configured engines. Model downloads, GitHub links, external sharing and optional private-network services require their own network connections; “local” does not mean every operation is offline.
+- This is a **shared studio**, not an isolated multi-tenant service. Accounts do not create separate model queues or private media libraries. Use the [account guide](docs/accounts.en.md) before inviting others.
+- Do not commit weights, environments, user prompts/images/chats, account databases, tokens or private machine configuration. This repository excludes them.
+- The public release can lag behind a development machine. Local sample galleries, additional models and newer controls are not automatically included in this checkout. Read the [model scope](docs/models.en.md) rather than assuming parity.
+- Models and vendored components retain their upstream licenses. A model being downloadable or listed here does not grant unrestricted commercial rights. Check the selected component's license before distributing it or its outputs.
 
-This repository is a reviewed release and migration copy. It may lag behind local development or production. It excludes model weights, virtual environments, user tasks, chat records, reference images and account configuration. A complete installation on a fresh machine has not been validated. This is not a one-click application.
+## Repository map
 
-## Repository contents
+`src/` contains the application and model manifests; `tests/` contains targeted checks; `requirements/` holds dependency pins; `vendor/` holds native source; `patches/` records experimental adaptations. [SHA256SUMS.txt](SHA256SUMS.txt) covers the release files.
 
-- `src/`: frontend, backend, model manifests, installation and validation tools.
-- `tests/`: tests; some require installed models or running services.
-- `requirements/`: pinned dependencies.
-- `vendor/`: native engine source, with upstream licenses retained.
-- `patches/`: pinned versions and Apple adaptations.
-
-Models and third-party source retain their upstream licenses. H3/ClipProj Apple support is experimental. A successful short sample does not establish support for every resolution or duration.
-
-## Sign-in and accounts
-
-On the Mac running the service, open `http://127.0.0.1:1235/setup` to create the first administrator, then sign in from other devices. Administrators can create, disable and delete accounts and reset passwords. See [account documentation](docs/accounts.en.md) ([中文](docs/accounts.md)). There is no default password. Account files stay in the runtime data directory and must not be uploaded. Tasks remain shared studio data.
-
-## Viggle v0.3
-
-Separate six-step and nine-step detail modes are available, with the previous default retained. See [installation and validation](docs/viggle-v03.en.md) ([中文](docs/viggle-v03.md)). Download model weights separately on the target Mac.
-
-## Brand design
-
-![MYAI brand concepts](docs/images/myai-brand-scenarios.png)
-
-Brand application concepts; the interface screenshots above show the implemented product. The example domain is a placeholder.
+When reporting a problem, include the model ID, Mac chip/memory, macOS version, dimensions/steps and a sanitized error. Remove private prompts, images, account data and local network details.
